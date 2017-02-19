@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_opengl/geometry/juce_Quaternion.h

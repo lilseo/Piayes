@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_data_structures/app_properties/juce_ApplicationProperties.h

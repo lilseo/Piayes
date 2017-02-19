@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_audio_utils/audio_cd/juce_AudioCDBurner.h

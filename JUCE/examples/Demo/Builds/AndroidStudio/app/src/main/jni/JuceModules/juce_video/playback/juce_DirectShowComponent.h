@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_video/playback/juce_DirectShowComponent.h

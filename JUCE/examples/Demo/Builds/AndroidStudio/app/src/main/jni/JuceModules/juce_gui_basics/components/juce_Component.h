@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_gui_basics/components/juce_Component.h

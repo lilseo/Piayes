@@ -1,1 +1,0 @@
-/Users/lilyseo/Desktop/JUCE/modules/juce_graphics/native/juce_linux_Fonts.cpp
