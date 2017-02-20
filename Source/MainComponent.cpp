@@ -206,6 +206,7 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
             std::cout << n << ' ';
         std::cout << std::endl;
         
+        const MessageManagerLock mmLock;
         notesBox.clear();
         logNoteMessage("Notes: ");
         for (String n : bufferNotes)
@@ -225,6 +226,7 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         std::cout << timecode << std::endl;
         bufferTimes = times;
         
+        const MessageManagerLock mmLock;
         rhythmBox.clear();
         logRhythmMessage("Times: ");
         for (double n : bufferTimes)
@@ -249,6 +251,7 @@ void MainContentComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, i
         std::cout << timecode << std::endl;
         bufferTimes = times;
         
+        const MessageManagerLock mmLock;
         rhythmBox.clear();
         logRhythmMessage("Times: ");
         for (double n : bufferTimes)
