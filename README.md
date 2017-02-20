@@ -1,10 +1,10 @@
 ##EECS 481 - Winter 2017 <br>
 ##Piayes - Brad's DAW <br>
-#Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br>
+####Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br>
 #Alpha Release <br> <br>
 
 #What is Piayes:<br>
-Piayes is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
+*Piayes* is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
 Step 1: the user records a melody without worrying about the tempo/rhythm of the song.<br>
 Step 2: the user records the desired tempo and length of each of the notes previously played by using any key on the keyboard.<br>
 Step 3: the application will map the keys from step 1 to the timestamps from step 2 and output the resulting song.<br>
