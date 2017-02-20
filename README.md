@@ -1,4 +1,4 @@
-EECS 481 - Winter 2017
+EECS 481 - Winter 2017 <br>
 Piayes - Brad's DAW 
 Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham
 Alpha Release
