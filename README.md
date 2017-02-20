@@ -10,8 +10,9 @@ Step 3: the application will map the keys from step 1 to the timestamps from ste
 
 ####Deploying *Piayes*<br>
 1. Download the *JUCE* framework at https://www.juce.com/get-juce.<br>
+2. Clone this GIT repository.
 2. Run *Piayes.jucer*, which will open up a *Projucer* window.<br>
-3. Select *Config/Modules/juce_audio_basics*. There should be an error message regarding a path not found.<br>
+3. Select **Config/Modules/juce_audio_basics**. There should be an error message regarding a path not found.<br>
 4. Change the path to where *JUCE/modules* has been saved locally.<br>
 5. Go back to *Config/Modules* and select all the path.<br>
 6. Click on *Set paths for all modules* followed by *Copy the path from the module "juce_audio_basics" to all other modules*.<br>
