@@ -21,7 +21,7 @@ Step 3: the application will map the keys from step 1 to the timestamps from ste
 
 ####Using *Piayes*<br>
 1. Connect a MIDI keyboard to your machine or use the piano user interface.<br>
-2. Click on the **Record** button and select the **Set Notes** mode to save the keys of the notes played (opposite order works too).<br>
+2. Click on the **Record** button and select the **Set Notes** mode to save the keys of the notes played.<br>
 3. The application will save and output the keys, but not the timestamps, of all the notes played.<br>
 4. Click on **Playback Notes** to output the keys of all the notes recorded so far.<br>
 5. Select **Set Rhythm** mode to save the key-down and key-up timestamps of all the notes played.<br>
