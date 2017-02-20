@@ -265,10 +265,14 @@ MainContentComponent::IncomingMessageCallback::IncomingMessageCallback (MainCont
 {}
 
 void MainContentComponent::playNotes () {
+    String logstring = "";
     for (int i = 0; i < bufferNotes.size(); i++) {
-        std::cout << bufferNotes[i] << " : " << convertNameToMidi(bufferNotes[i]) << std::endl;
-        notesMidi.push_back(convertNameToMidi(bufferNotes[i]));
+        int midiNote =  convertNameToMidi(bufferNotes[i]);
+        std::cout << bufferNotes[i] << " : " << midiNote << std::endl;
+        logstring += bufferNotes[i] + " : " + String(midiNote) + "\n";
+        notesMidi.push_back(midiNote);
     }
+    logFeedback(logstring);
 }
 
 std::vector<NoteData> MainContentComponent::combineData(std::vector<String> notes, std::vector<double> times){
@@ -378,10 +382,13 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     else if (buttonThatWasClicked == &combineButton){
         bufferOut = combineData(bufferNotes, bufferTimes);
 		if (!bufferOut.empty()) {
+            String logstring = "";
 			std::cout << "bufferOut: " << std::endl;
 			for (NoteData n : bufferOut) {
 				std::cout << n.note << ' ' << n.timeStart << ' ' << n.timeEnd << std::endl;
+                logstring += n.note + " " + String(n.timeStart) + " " + String(n.timeEnd) + "\n";
 			}
+            logFeedback(logstring); 
 		}
     }
     else if (buttonThatWasClicked == &clearButton){
