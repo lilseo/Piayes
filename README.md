@@ -1,4 +1,4 @@
-####EECS 481 - Winter 2017 <br> ***Piayes* - Brad's DAW <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Alpha Release** <br> <br>
+####EECS 481 - Winter 2017 <br> *Piayes* - Brad's DAW <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Alpha Release <br> <br>
 
 #####What is *Piayes*<br>
 *Piayes* is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
