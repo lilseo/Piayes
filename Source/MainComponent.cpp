@@ -38,6 +38,20 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     addAndMakeVisible (keyboardComponent);
     keyboardState.addListener (this);
     
+    addAndMakeVisible (notesBox);
+    notesBox.setMultiLine (true);
+    notesBox.setReadOnly(true);
+    logNoteMessage("Notes: ");
+    
+    addAndMakeVisible (rhythmBox);
+    rhythmBox.setMultiLine (true);
+    rhythmBox.setReadOnly(true);
+    logRhythmMessage("Times: ");
+    
+    addAndMakeVisible (feedbackBox);
+    feedbackBox.setMultiLine (true);
+    feedbackBox.setReadOnly(true);
+    
     addAndMakeVisible (recordButton);
     recordButton.setButtonText ("Record");
     recordButton.addListener (this);
@@ -81,6 +95,10 @@ MainContentComponent::~MainContentComponent() {
 void MainContentComponent::resized() {
     Rectangle<int> area (getLocalBounds());
     keyboardComponent.setBounds (area.removeFromTop (80).reduced(8));
+    
+    notesBox.setBounds (200, 100, 150, 225);
+    rhythmBox.setBounds (400, 100, 150, 225);
+    feedbackBox.setBounds(200, 337.5, 350, 50);
     
     recordButton.setBounds (16, 100, 150, 24);
     stopRecordButton.setBounds (16, 125, 150, 24);
@@ -150,6 +168,23 @@ void MainContentComponent::comboBoxChanged (ComboBox* box)
 }
 
 
+void MainContentComponent::logNoteMessage (const String& m) {
+    notesBox.moveCaretToEnd();
+    notesBox.insertTextAtCaret (m + newLine);
+}
+
+
+void MainContentComponent::logRhythmMessage (const String& m) {
+    rhythmBox.moveCaretToEnd();
+    rhythmBox.insertTextAtCaret (m + newLine);
+}
+
+void MainContentComponent::logFeedback (const String& m) {
+    feedbackBox.clear();
+    feedbackBox.moveCaretToEnd();
+    feedbackBox.insertTextAtCaret (m + newLine);
+}
+
 
 // Handle callbacks from the midi device and on-screen keyboard - Called every time we play a note
 void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) {
@@ -170,6 +205,11 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         for (String n : bufferNotes)
             std::cout << n << ' ';
         std::cout << std::endl;
+        
+        notesBox.clear();
+        logNoteMessage("Notes: ");
+        for (String n : bufferNotes)
+            logNoteMessage(n);
     }
     
     const double time = m.getTimeStamp() - startTime;
@@ -184,6 +224,11 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         times.push_back(time);
         std::cout << timecode << std::endl;
         bufferTimes = times;
+        
+        rhythmBox.clear();
+        logRhythmMessage("Times: ");
+        for (double n : bufferTimes)
+            logRhythmMessage(String(n));
     }
 }
 
@@ -203,6 +248,11 @@ void MainContentComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, i
         times.push_back(time);
         std::cout << timecode << std::endl;
         bufferTimes = times;
+        
+        rhythmBox.clear();
+        logRhythmMessage("Times: ");
+        for (double n : bufferTimes)
+            logRhythmMessage(String(n));
     }
 }
 
@@ -223,6 +273,7 @@ std::vector<NoteData> MainContentComponent::combineData(std::vector<String> note
     std::cout << "size of notes: "<< notes.size() << std::endl << "size of times:" << times.size() << std::endl;
     if (notes.empty() || times.empty()){
         std::cout << "Record (1) Notes and (2) Tempo before combining tracks!" << std::endl;
+        logFeedback("Record (1) Notes and (2) Tempo before combining tracks!");
         return bufferOut; // Will be empty... TODO: handle this a better way
     }
     NoteData newNote;
@@ -299,8 +350,10 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         std::cout << "setNotes and setRhythm both true" << std::endl;
     
     if (buttonThatWasClicked == &recordButton and record == false) {
-        if (setNotes == false and setRhythm == false)
-            std::cout << "Select either \"Set notes \" or \"Set rhythym\" before recording" << std::endl;
+        if (setNotes == false and setRhythm == false) {
+            std::cout << "Select either \"Set notes\" or \"Set rhythm\" before recording." << std::endl;
+            logFeedback("Select either \"Set notes\" or \"Set rhythm\" before recording.");
+        }
         else
             record = true;
     }
@@ -311,12 +364,10 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         playNotes();
     }
     else if (buttonThatWasClicked == &notesButton) {
-        notes.clear();
         setNotes = true;
         setRhythm = false;
     }
     else if (buttonThatWasClicked == &rhythmButton) {
-        times.clear();
         setNotes = false;
         setRhythm = true;
     }
@@ -332,9 +383,16 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     }
     else if (buttonThatWasClicked == &clearButton){
         bufferNotes.clear();
+        notes.clear();
         bufferTimes.clear();
+        times.clear();
+        notesBox.clear();
+        logNoteMessage("Notes: ");
+        rhythmBox.clear();
+        logRhythmMessage("Times: ");
         record = false;
 		std::cout << "All recordings have been erased." << std::endl;
+        logFeedback("All recordings have been erased.");
     }
 }
 

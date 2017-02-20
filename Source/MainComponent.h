@@ -41,6 +41,10 @@ private:
     bool isAddingFromMidiInput;
 	double startTime;
     
+    TextEditor notesBox;
+    TextEditor rhythmBox;
+    TextEditor feedbackBox;
+                                    
     MidiKeyboardState keyboardState;
     MidiKeyboardComponent keyboardComponent;
     
@@ -77,6 +81,12 @@ private:
     void setMidiOutput (int index);
 
     void comboBoxChanged (ComboBox* box) override;
+                                    
+    void logNoteMessage (const String& m);
+                                    
+    void logRhythmMessage (const String& m);
+                                    
+    void logFeedback (const String& m);
 
     // Handle callbacks from the midi device and on-screen keyboard
     void handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) override;
