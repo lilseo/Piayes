@@ -1,10 +1,182 @@
 #include "MainComponent.h"
 
 
+SineWaveSound::SineWaveSound() {}
+
+bool SineWaveSound::appliesToNote (int /*midiNoteNumber*/) {
+    return true;
+}
+bool SineWaveSound::appliesToChannel (int /*midiChannel*/) {
+    return true;
+}
+
+
+//==============================================================================
+SineWaveVoice::SineWaveVoice()   : currentAngle (0), angleDelta (0), level (0), tailOff (0) {}
+
+bool SineWaveVoice::canPlaySound (SynthesiserSound* sound) {
+    return dynamic_cast<SineWaveSound*> (sound) != nullptr;
+}
+
+void SineWaveVoice::startNote (int midiNoteNumber, float velocity,
+                    SynthesiserSound*, int /*currentPitchWheelPosition*/) {
+    currentAngle = 0.0;
+    level = velocity * 0.15;
+    tailOff = 0.0;
+
+    double cyclesPerSecond = MidiMessage::getMidiNoteInHertz (midiNoteNumber);
+    double cyclesPerSample = cyclesPerSecond / getSampleRate();
+
+    angleDelta = cyclesPerSample * 2.0 * double_Pi;
+}
+
+void SineWaveVoice::stopNote (float /*velocity*/, bool allowTailOff)
+{
+    if (allowTailOff)
+    {
+        // start a tail-off by setting this flag. The render callback will pick up on
+        // this and do a fade out, calling clearCurrentNote() when it's finished.
+
+        if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
+                            // stopNote method could be called more than once.
+            tailOff = 1.0;
+    }
+    else
+    {
+        // we're being told to stop playing immediately, so reset everything..
+
+        clearCurrentNote();
+        angleDelta = 0.0;
+    }
+}
+
+void SineWaveVoice::pitchWheelMoved (int /*newValue*/) {}
+
+void SineWaveVoice::controllerMoved (int /*controllerNumber*/, int /*newValue*/) {}
+
+void SineWaveVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) {
+    int count = 0;
+    if (angleDelta != 0.0)
+    {
+        if (tailOff > 0)
+        {
+            while (--numSamples >= 0)
+            {
+                const float currentSample = (float) (std::sin (currentAngle) * level * tailOff);
+                
+                for (int i = outputBuffer.getNumChannels(); --i >= 0;) {
+                    outputBuffer.addSample (i, startSample, currentSample);
+                }
+
+                currentAngle += angleDelta;
+                ++startSample;
+
+                tailOff *= 0.99;
+                count++;
+                if (tailOff <= 0.005)
+                {
+                    clearCurrentNote();
+                    
+                    angleDelta = 0.0;
+                    break;
+                }
+            }
+            std::cout << count << std::endl;
+
+        }
+        else
+        {
+            while (--numSamples >= 0)
+            {
+                const float currentSample = (float) (std::sin (currentAngle) * level);
+
+                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
+                    outputBuffer.addSample (i, startSample, currentSample);
+
+                currentAngle += angleDelta;
+                ++startSample;
+            }
+        }
+    }
+}
+
+
+
+//==============================================================================
+// This is an audio source that streams the output of our demo synth.
+SynthAudioSource::SynthAudioSource (MidiKeyboardState& keyState)  : keyboardState (keyState) {
+    // Add some voices to our synth, to play the sounds..
+    for (int i = 4; --i >= 0;)
+    {
+        synth.addVoice (new SineWaveVoice());   // These voices will play our custom sine-wave sounds..
+        synth.addVoice (new SamplerVoice());    // and these ones play the sampled sounds
+    }
+
+    // ..and add a sound for them to play...
+    setUsingSineWaveSound();
+}
+
+void SynthAudioSource::setUsingSineWaveSound() {
+    synth.clearSounds();
+    synth.addSound (new SineWaveSound());
+}
+
+void SynthAudioSource::setUsingSampledSound() {
+    WavAudioFormat wavFormat;
+
+    ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (new MemoryInputStream (BinaryData::cello_wav,
+                                                                                                    BinaryData::cello_wavSize,
+                                                                                                    false),
+                                                                                true));
+
+    BigInteger allNotes;
+    allNotes.setRange (0, 128, true);
+
+    synth.clearSounds();
+    synth.addSound (new SamplerSound ("demo sound",
+                                        *audioReader,
+                                        allNotes,
+                                        74,   // root midi note
+                                        0.1,  // attack time
+                                        0.1,  // release time
+                                        10.0  // maximum sample length
+                                        ));
+}
+
+void SynthAudioSource::prepareToPlay (int /*samplesPerBlockExpected*/, double sampleRate) {
+    midiCollector.reset (sampleRate);
+
+    synth.setCurrentPlaybackSampleRate (sampleRate);
+}
+
+void SynthAudioSource::releaseResources() {}
+
+void SynthAudioSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) {
+    // the synth always adds its output to the audio buffer, so we have to clear it
+    // first..
+    bufferToFill.clearActiveBufferRegion();
+
+    // fill a midi buffer with incoming messages from the midi input.
+    MidiBuffer incomingMidi;
+    midiCollector.removeNextBlockOfMessages (incomingMidi, bufferToFill.numSamples);
+
+    // pass these messages to the keyboard state so that it can update the component
+    // to show on-screen which keys are being pressed on the physical midi keyboard.
+    // This call will also add midi messages to the buffer which were generated by
+    // the mouse-clicking on the on-screen keyboard.
+    keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, true);
+
+    // and now get the synth to process the midi events and generate its output.
+    synth.renderNextBlock (*bufferToFill.buffer, incomingMidi, 0, bufferToFill.numSamples);
+}
+
+
+
 MainContentComponent::MainContentComponent()
 : deviceManager (getSharedAudioDeviceManager()),
 lastInputIndex (0),
 isAddingFromMidiInput (false),
+synthAudioSource (keyboardState),
 keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
 startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     
@@ -13,7 +185,7 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     const StringArray midiInputs (MidiInput::getDevices());
     midiInputList.addItemList (midiInputs, 1);
     midiInputList.addListener (this);
-	
+    
     // Checks if there are any enabled devices - never true for alpha, might be useful for beta
     for (int i = 0; i < midiInputs.size(); ++i)
     {
@@ -22,12 +194,12 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
             setMidiInput (i);
             break;
         }
-	
+    
     }
     
     // If no MIDI enabled - always true for alpha, might be useful for beta
     if (midiInputList.getSelectedId() == 0) {
-		setMidiInput (0); // called with or without MIDI keyboard
+        setMidiInput (0); // called with or without MIDI keyboard
     }
     
     // MIDI Outputs - not working yet
@@ -82,6 +254,9 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     rhythmButton.setRadioGroupId (1);
     rhythmButton.addListener (this);
     
+    audioSourcePlayer.setSource (&synthAudioSource);
+    deviceManager.addAudioCallback (&audioSourcePlayer);
+
     
     setSize (600, 400);
 }
@@ -134,8 +309,8 @@ void MainContentComponent::setMidiInput (int index)
     if (! deviceManager.isMidiInputEnabled(newInput)) { // always the case for alpha
         deviceManager.setMidiInputEnabled (newInput, true);
     }
-	
-	// MididInputCallback receives messages from a physical MIDI input device
+    
+    // MididInputCallback receives messages from a physical MIDI input device
     deviceManager.addMidiInputCallback (newInput, this);
     midiInputList.setSelectedId (index + 1, dontSendNotification);
     
@@ -158,7 +333,7 @@ void MainContentComponent::setMidiOutput (int index)
 // need to implement this for application to run
 void MainContentComponent::comboBoxChanged (ComboBox* box)
 {
-	if (box == &midiInputList) {
+    if (box == &midiInputList) {
         std::cout << &midiInputList << std::endl;
         setMidiInput  (midiInputList.getSelectedItemIndex());
     }
@@ -381,15 +556,15 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){
         bufferOut = combineData(bufferNotes, bufferTimes);
-		if (!bufferOut.empty()) {
+        if (!bufferOut.empty()) {
             String logstring = "";
-			std::cout << "bufferOut: " << std::endl;
-			for (NoteData n : bufferOut) {
-				std::cout << n.note << ' ' << n.timeStart << ' ' << n.timeEnd << std::endl;
+            std::cout << "bufferOut: " << std::endl;
+            for (NoteData n : bufferOut) {
+                std::cout << n.note << ' ' << n.timeStart << ' ' << n.timeEnd << std::endl;
                 logstring += n.note + " " + String(n.timeStart) + " " + String(n.timeEnd) + "\n";
-			}
+            }
             logFeedback(logstring); 
-		}
+        }
     }
     else if (buttonThatWasClicked == &clearButton){
         bufferNotes.clear();
@@ -401,7 +576,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         rhythmBox.clear();
         logRhythmMessage("Times: ");
         record = false;
-		std::cout << "All recordings have been erased." << std::endl;
+        std::cout << "All recordings have been erased." << std::endl;
         logFeedback("All recordings have been erased.");
     }
 }

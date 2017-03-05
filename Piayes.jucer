@@ -17,20 +17,20 @@
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Piayes"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -51,4 +51,7 @@
     <MODULE id="juce_video" showAllCode="0" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS/>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
