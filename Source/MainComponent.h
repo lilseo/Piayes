@@ -3,6 +3,7 @@
 //  Piayes
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "BinaryData.h"
 #include <iostream>
 #include <vector>
 #include <string>
