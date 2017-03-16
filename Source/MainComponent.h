@@ -9,6 +9,8 @@
 #include <string>
 
 
+bool is_combine_button = false;
+
 struct SineWaveSound : public SynthesiserSound
 {
     SineWaveSound();
@@ -75,15 +77,15 @@ struct SynthAudioSource  : public AudioSource
 
 static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
 // Data structure to hold relevant note data for final output buffer
-struct NoteData{
+/*struct NoteData{
     String note;
     double timeStart;
     double timeEnd;
-};
+};*/
 
 // Global vectors to take hold buffer data
 std::vector<NoteData> bufferOut;
-std::vector<String> bufferNotes;
+std::vector<NoteData> bufferNotes;
 std::vector<double> bufferTimes;
 
 class MainContentComponent  :   public Component,
@@ -131,7 +133,7 @@ private:
     SynthAudioSource synthAudioSource;
 
     
-    std::vector<String> notes;
+    std::vector<NoteData> notes;
     std::vector<double> times;
     std::vector<int> notesMidi;
     
@@ -170,7 +172,7 @@ private:
     
     void playNotes ();
     
-    std::vector<NoteData> combineData(std::vector<String> notes, std::vector<double> times);
+    std::vector<NoteData> combineData(std::vector<NoteData> notes, std::vector<double> times);
     
     int convertNameToMidi (String noteString);
     

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="cnPcjk" name="Piayes" projectType="guiapp" version="1.0.0"
-              bundleIdentifier="com.yourcompany.Piayes" includeBinaryInAppConfig="1"
+              bundleIdentifier="com.yourcompany.Piayes" includeBinaryInAppConfig="0"
               jucerVersion="4.3.1">
   <MAINGROUP id="kPZeX6" name="Piayes">
     <GROUP id="{D4D25198-B916-5C78-90A4-CAFD0B682219}" name="Source">
+      <FILE id="OG9y3T" name="BinaryData.cpp" compile="1" resource="0" file="Source/BinaryData.cpp"/>
+      <FILE id="FvNO50" name="BinaryData.h" compile="0" resource="0" file="Source/BinaryData.h"/>
+      <FILE id="tf7ZdH" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="ZxOF1u" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="bmamfb" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
