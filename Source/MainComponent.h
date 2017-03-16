@@ -121,9 +121,12 @@ private:
     TextButton clearButton;
     ToggleButton notesButton;
     ToggleButton rhythmButton;
+    ToggleButton chordMajorButton;
+    
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
+    bool setChordMajor = false;
                                     
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;
