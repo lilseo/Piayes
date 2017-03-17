@@ -173,7 +173,6 @@ void SynthAudioSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
 
     // and now get the synth to process the midi events and generate its output.
     synth.renderNextBlock (*bufferToFill.buffer, incomingMidi, 0, bufferToFill.numSamples);
-	std::cout << "here" << std::endl;
 }
 
 
