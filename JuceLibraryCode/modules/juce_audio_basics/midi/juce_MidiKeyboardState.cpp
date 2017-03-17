@@ -179,7 +179,7 @@ void MidiKeyboardState::processNextMidiBuffer (MidiBuffer& buffer,
                                                const int startSample,
                                                const int numSamples,
                                                const bool injectIndirectEvents,
-                                               int chordVersion )
+                                               int chordValue)
 {
     MidiBuffer::Iterator i (buffer);
     MidiMessage message;
@@ -198,8 +198,7 @@ void MidiKeyboardState::processNextMidiBuffer (MidiBuffer& buffer,
         
         while (i2.getNextEvent (message, time))
         {
-            // Major chords
-            if (chordVersion == 1) {
+            if (chordValue == 1) {
                 MidiMessage m3(message);
                 m3.setNoteNumber((int) message.getNoteNumber() + 4);
                 MidiMessage m5(message);
@@ -209,12 +208,6 @@ void MidiKeyboardState::processNextMidiBuffer (MidiBuffer& buffer,
                 buffer.addEvent (m3, startSample + pos);
                 buffer.addEvent (m5, startSample + pos);
             }
-            else {
-                // default to the normal mode of no chords
-                const int pos = jlimit (0, numSamples - 1, roundToInt ((time - firstEventToAdd) * scaleFactor));
-                buffer.addEvent (message, startSample + pos);
-            }
-            
         }
     }
     

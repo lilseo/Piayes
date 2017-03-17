@@ -183,12 +183,12 @@ public:
                                 int numSamples,
                                 bool injectIndirectEvents);
     
-    // Overloaded function in order to play
+    // overloaded version to handle chord triggering with root note
     void processNextMidiBuffer (MidiBuffer& buffer,
                                 int startSample,
                                 int numSamples,
                                 bool injectIndirectEvents,
-                                int chordVersion);
+                                int chordValue);
     
     //==============================================================================
     /** Registers a listener for callbacks when keys go up or down.

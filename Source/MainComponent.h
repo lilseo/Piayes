@@ -8,6 +8,9 @@
 #include <vector>
 #include <string>
 
+// a value based on what, if any, chord feature is active
+// 0 = no chord feature active, 1 = major
+int chordValue = 0;
 
 struct SineWaveSound : public SynthesiserSound
 {
@@ -97,8 +100,7 @@ public:
     ~MainContentComponent();
     
     void resized() override;
-                                    
-    int whatChordActive();
+                            
     
     
 private:
@@ -128,7 +130,7 @@ private:
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
-    bool setChordMajor = false;
+    
                                     
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;
