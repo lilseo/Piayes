@@ -5,6 +5,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "BinaryData.h"
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -126,6 +127,9 @@ private:
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
+                                    
+    TextButton saveButton;
+    TextButton loadButton;
                                     
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;

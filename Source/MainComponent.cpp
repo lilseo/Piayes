@@ -259,6 +259,14 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     rhythmButton.setRadioGroupId (1);
     rhythmButton.addListener (this);
     
+    addAndMakeVisible (saveButton);
+    saveButton.setButtonText ("Save");
+    saveButton.addListener (this);
+    
+    addAndMakeVisible (loadButton);
+    loadButton.setButtonText ("Load");
+    loadButton.addListener (this);
+    
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 
@@ -287,6 +295,9 @@ void MainContentComponent::resized() {
     clearButton.setBounds (16, 200, 150, 24);
     notesButton.setBounds (16, 225, 150, 24);
     rhythmButton.setBounds (16, 250, 150, 24);
+    
+    saveButton.setBounds (16, 300, 150, 24);
+    loadButton.setBounds (16, 325, 150, 24);
 }
 
 
@@ -592,6 +603,47 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         record = false;
         std::cout << "All recordings have been erased." << std::endl;
         logFeedback("All recordings have been erased.");
+    }
+    else if (buttonThatWasClicked == &saveButton) {
+        if (!notes.empty() and !bufferTimes.empty()) {
+            std::ofstream file("../../../../piayes_track.txt");
+            for (NoteData i : bufferNotes) {
+                file << i.note << std::endl;
+            }
+            file << "###" << std::endl;
+            for (double i : bufferTimes) {
+                file << String(i) << std::endl;
+            }
+            file.close();
+            logFeedback("Saved.");
+        }
+    }
+    else if (buttonThatWasClicked == &loadButton) {
+        std::ifstream file("../../../../piayes_track.txt");
+        if (file.is_open()) {
+            bool time = false;
+            std::string line;
+            while (std::getline(file, line)) {
+                if (line == "###") {
+                    std::getline(file, line);
+                    time = true;
+                }
+                if (!time) {
+                    NoteData newNote;
+                    newNote.note = String(line);
+                    bufferNotes.push_back(newNote);
+                    logNoteMessage(newNote.note);
+                }
+                else {
+                    const char * newStr = line.c_str();
+                    bufferTimes.push_back(std::atof(newStr));
+                    logRhythmMessage(String(line));
+                }
+            }
+            file.close();
+            logFeedback("Loaded.");
+        }
+//        }
     }
 }
 
