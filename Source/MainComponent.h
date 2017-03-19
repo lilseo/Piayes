@@ -127,7 +127,8 @@ private:
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
-                                    
+                         
+    ToggleButton nativeButton;                                
     TextButton saveButton;
     TextButton loadButton;
                                     

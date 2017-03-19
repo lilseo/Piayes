@@ -604,46 +604,79 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         std::cout << "All recordings have been erased." << std::endl;
         logFeedback("All recordings have been erased.");
     }
-    else if (buttonThatWasClicked == &saveButton) {
-        if (!notes.empty() and !bufferTimes.empty()) {
-            std::ofstream file("../../../../piayes_track.txt");
-            for (NoteData i : bufferNotes) {
-                file << i.note << std::endl;
+    else if (buttonThatWasClicked == &saveButton or buttonThatWasClicked == &loadButton) {
+        const bool useNativeVersion = nativeButton.getToggleState();
+        if (buttonThatWasClicked == &saveButton) {
+            if (!notes.empty() and !bufferTimes.empty()) {
+                FileChooser fc ("Choose a file to save...",
+                                File::getCurrentWorkingDirectory(),
+                                "*",
+                                useNativeVersion);
+        
+                if (fc.browseForFileToSave (true)) {
+                    File chosenFile = fc.getResult();
+                
+                    std::ofstream file(chosenFile.getFullPathName().toStdString());
+                    for (NoteData i : bufferNotes) {
+                        file << i.note << std::endl;
+                    }
+                    file << "###" << std::endl;
+                    for (double i : bufferTimes) {
+                        file << String(i) << std::endl;
+                    }
+                    file.close();
+                    logFeedback("Saved.");
+                }
             }
-            file << "###" << std::endl;
-            for (double i : bufferTimes) {
-                file << String(i) << std::endl;
+            else {
+                logFeedback("Need to record notes and times first.");
             }
-            file.close();
-            logFeedback("Saved.");
         }
-    }
-    else if (buttonThatWasClicked == &loadButton) {
-        std::ifstream file("../../../../piayes_track.txt");
-        if (file.is_open()) {
-            bool time = false;
-            std::string line;
-            while (std::getline(file, line)) {
-                if (line == "###") {
-                    std::getline(file, line);
-                    time = true;
+        else if (buttonThatWasClicked == &loadButton) {
+            FileChooser fc ("Choose a file to open...",
+                            File::getCurrentWorkingDirectory(),
+                            "*",
+                            useNativeVersion);
+            
+            if (fc.browseForFileToOpen()) {
+                String chosen;
+                for (int i = 0; i < fc.getResults().size(); ++i)
+                    chosen << fc.getResults().getReference(i).getFullPathName() << "\n";
+                
+                AlertWindow::showMessageBoxAsync (AlertWindow::InfoIcon,
+                                                  "File Chooser...",
+                                                  "You picked: #" + chosen + "#");
+                std::string chosenStr = chosen.toStdString();
+                chosenStr.erase(std::remove(chosenStr.begin(), chosenStr.end(), '\n'), chosenStr.end());
+                std::cout << chosenStr << std::endl;
+                std::ifstream file(chosenStr);
+                if (file.is_open()) {
+                    bool time = false;
+                    std::string line;
+                    while (std::getline(file, line)) {
+                        if (line == "###") {
+                            std::getline(file, line);
+                            time = true;
+                        }
+                        if (!time) {
+                            NoteData newNote;
+                            newNote.note = String(line);
+                            bufferNotes.push_back(newNote);
+                            logNoteMessage(newNote.note);
+                        }
+                        else {
+                            const char * newStr = line.c_str();
+                            bufferTimes.push_back(std::atof(newStr));
+                            logRhythmMessage(String(line));
+                        }
+                    }
+                    file.close();
+                    logFeedback("Loaded.");
                 }
-                if (!time) {
-                    NoteData newNote;
-                    newNote.note = String(line);
-                    bufferNotes.push_back(newNote);
-                    logNoteMessage(newNote.note);
-                }
-                else {
-                    const char * newStr = line.c_str();
-                    bufferTimes.push_back(std::atof(newStr));
-                    logRhythmMessage(String(line));
-                }
+
             }
-            file.close();
-            logFeedback("Loaded.");
+//            std::ifstream file("../../../../piayes_track.txt");
         }
-//        }
     }
 }
 
