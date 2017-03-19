@@ -642,13 +642,10 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                 String chosen;
                 for (int i = 0; i < fc.getResults().size(); ++i)
                     chosen << fc.getResults().getReference(i).getFullPathName() << "\n";
-                
-                AlertWindow::showMessageBoxAsync (AlertWindow::InfoIcon,
-                                                  "File Chooser...",
-                                                  "You picked: #" + chosen + "#");
+
                 std::string chosenStr = chosen.toStdString();
                 chosenStr.erase(std::remove(chosenStr.begin(), chosenStr.end(), '\n'), chosenStr.end());
-                std::cout << chosenStr << std::endl;
+
                 std::ifstream file(chosenStr);
                 if (file.is_open()) {
                     bool time = false;
@@ -673,9 +670,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                     file.close();
                     logFeedback("Loaded.");
                 }
-
             }
-//            std::ifstream file("../../../../piayes_track.txt");
         }
     }
 }
