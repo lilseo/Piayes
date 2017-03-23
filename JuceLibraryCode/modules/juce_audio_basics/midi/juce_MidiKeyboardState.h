@@ -183,13 +183,13 @@ public:
                                 int numSamples,
                                 bool injectIndirectEvents);
     
-    // overloaded version to handle chord triggering with root note
+    // Overload for Chord triggering with one note
     void processNextMidiBuffer (MidiBuffer& buffer,
-                                int startSample,
-                                int numSamples,
-                                bool injectIndirectEvents,
-                                int chordValue);
-    
+                                                   const int startSample,
+                                                   const int numSamples,
+                                                   const bool injectIndirectEvents,
+                                                   int chordValue);
+
     //==============================================================================
     /** Registers a listener for callbacks when keys go up or down.
         @see removeListener

@@ -199,15 +199,22 @@ void MidiKeyboardState::processNextMidiBuffer (MidiBuffer& buffer,
         while (i2.getNextEvent (message, time))
         {
             if (chordValue == 1) {
+                // value 1 is major chords
                 MidiMessage m3(message);
-                m3.setNoteNumber((int) message.getNoteNumber() + 4);
+                m3.setNoteNumber((int) message.getNoteNumber() + 4); // the major third
                 MidiMessage m5(message);
-                m5.setNoteNumber((int) message.getNoteNumber() + 7);
+                m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
                 const int pos = jlimit (0, numSamples - 1, roundToInt ((time - firstEventToAdd) * scaleFactor));
                 buffer.addEvent (message, startSample + pos);
                 buffer.addEvent (m3, startSample + pos);
                 buffer.addEvent (m5, startSample + pos);
             }
+            else {
+                // default to normal
+                const int pos = jlimit (0, numSamples - 1, roundToInt ((time - firstEventToAdd) * scaleFactor));
+                buffer.addEvent (message, startSample + pos);
+            }
+            //std::cout << "testing" << std::endl;
         }
     }
     

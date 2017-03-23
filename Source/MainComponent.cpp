@@ -583,7 +583,11 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         setRhythm = true;
     }
     else if (buttonThatWasClicked == &chordMajorButton) {
-        chordValue = 1;
+        if (chordValue == 1)
+            chordValue = 0;
+        else
+            chordValue = 1;
+        std::cout << chordValue;
     }
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){
