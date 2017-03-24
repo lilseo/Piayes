@@ -141,6 +141,7 @@ private:
     std::vector<NoteData> notes;
     std::vector<double> times;
     std::vector<int> notesMidi;
+    std::vector<MidiMessage> temp;
     
     class IncomingMessageCallback   : public CallbackMessage {
       public:
@@ -167,7 +168,7 @@ private:
     // Handle callbacks from the midi device and on-screen keyboard
     void handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) override;
     
-    void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
+    void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity);
     
     void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float /*velocity*/) override;
     
@@ -175,7 +176,7 @@ private:
      
     //void addMessageToList (const MidiMessage& message, const String& source);
     
-    void playNotes ();
+    void playNotes (std::vector<MidiMessage> temp);
     
     std::vector<NoteData> combineData(std::vector<NoteData> notes, std::vector<double> times);
     

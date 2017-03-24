@@ -388,6 +388,8 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
     MidiMessage m (MidiMessage::noteOn (midiChannel, midiNoteNumber, velocity));
     m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
     
+    temp.push_back(m);
+    
     if (record and setNotes) {
         std::cout << MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3) << std::endl;
 		NoteData temp;
@@ -461,15 +463,23 @@ MainContentComponent::IncomingMessageCallback::IncomingMessageCallback (MainCont
 : owner (o), message (m), source (s)
 {}
 
-void MainContentComponent::playNotes () {
-    String logstring = "";
-    for (int i = 0; i < bufferNotes.size(); i++) {
-        int midiNote =  convertNameToMidi(bufferNotes[i].note);
-        std::cout << bufferNotes[i].note << " : " << midiNote << std::endl;
-        logstring += bufferNotes[i].note + " : " + String(midiNote) + "\n";
-        notesMidi.push_back(midiNote);
+void MainContentComponent::playNotes (std::vector<MidiMessage> temp) {
+//    String logstring = "";
+//    for (int i = 0; i < bufferNotes.size(); i++) {
+//        int midiNote =  convertNameToMidi(bufferNotes[i].note);
+//        std::cout << bufferNotes[i].note << " : " << midiNote << std::endl;
+//        logstring += bufferNotes[i].note + " : " + String(midiNote) + "\n";
+//        notesMidi.push_back(midiNote);
+//    }
+//    logFeedback(logstring);
+    logFeedback("Playing notes.");
+    MidiInput*  MidiIn;
+    MidiIn = MidiInput::openDevice(0, this);
+    
+    for (int i = 0; i < temp.size(); i++) {
+//        logFeedback(temp[i]);
+        handleIncomingMidiMessage(MidiIn, temp[i]);
     }
-    logFeedback(logstring);
 }
 
 std::vector<NoteData> MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times){
@@ -566,7 +576,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         record = false;
     }
     else if (buttonThatWasClicked == &playNotesButton) {
-        playNotes();
+        playNotes(temp);
     }
     else if (buttonThatWasClicked == &notesButton) {
         setNotes = true;
