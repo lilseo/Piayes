@@ -150,7 +150,6 @@ private:
         MidiMessage message;
         String source;
     };
-
     
     /** Starts listening to a MIDI input device, enabling it if necessary. */
     void setMidiInput (int index);
