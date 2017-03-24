@@ -17,6 +17,7 @@ bool SineWaveSound::appliesToChannel (int /*midiChannel*/) {
 //==============================================================================
 SineWaveVoice::SineWaveVoice()   : currentAngle (0), angleDelta (0), level (0), tailOff (0) {}
 
+
 bool SineWaveVoice::canPlaySound (SynthesiserSound* sound) {
     return dynamic_cast<SineWaveSound*> (sound) != nullptr;
 }
@@ -39,8 +40,9 @@ void SineWaveVoice::stopNote (float /*velocity*/, bool allowTailOff) {
         // start a tail-off by setting this flag. The render callback will pick up on
         // this and do a fade out, calling clearCurrentNote() when it's finished.
 
-        if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-                            // stopNote method could be called more than once.
+        // we only need to begin a tail-off if it's not already doing so
+        // the stopNote method could be called more than once.
+        if (tailOff == 0.0)
             tailOff = 1.0;
     }
     else {
@@ -80,7 +82,6 @@ void SineWaveVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startS
                     break;
                 }
             }
-            std::cout << count << std::endl;
         }
         else {
             while (--numSamples >= 0) {
@@ -200,47 +201,46 @@ MainContentComponent::MainContentComponent()
     feedbackBox.setReadOnly(true);
     
     addAndMakeVisible (recordButton);
-    recordButton.setButtonText ("Record");
-    recordButton.addListener (this);
+    setButton(&recordButton, "Record");
     
     addAndMakeVisible (stopRecordButton);
-    stopRecordButton.setButtonText ("Stop Recording");
-    stopRecordButton.addListener (this);
+    setButton(&stopRecordButton, "Stop Recording");
     
     addAndMakeVisible (playNotesButton);
-    playNotesButton.setButtonText ("Playback Notes");
-    playNotesButton.addListener (this);
+    setButton(&playNotesButton, "Playback Notes");
     
     addAndMakeVisible (combineButton);
-    combineButton.setButtonText ("Combine Tracks");
-    combineButton.addListener (this);
+    setButton(&combineButton, "Combine Tracks");
     
     addAndMakeVisible (clearButton);
-    clearButton.setButtonText ("Clear Recording");
-    clearButton.addListener (this);
+    setButton(&clearButton, "Clear Recording");
     
     addAndMakeVisible (notesButton);
-    notesButton.setButtonText ("Set notes");
+    notesButton.setButtonText ("Set Notes");
     notesButton.setRadioGroupId (1);
     notesButton.addListener (this);
     
     addAndMakeVisible (rhythmButton);
-    rhythmButton.setButtonText ("Set rhythm");
+    rhythmButton.setButtonText ("Set Rhythm");
     rhythmButton.setRadioGroupId (1);
     rhythmButton.addListener (this);
     
     addAndMakeVisible (saveButton);
-    saveButton.setButtonText ("Save");
-    saveButton.addListener (this);
+    setButton(&saveButton, "Save");
     
     addAndMakeVisible (loadButton);
-    loadButton.setButtonText ("Load");
-    loadButton.addListener (this);
+    setButton(&loadButton, "Load");
     
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 
     setSize (600, 400);
+}
+
+
+void MainContentComponent::setButton(TextButton* button, String text) {
+    button->setButtonText (text);
+    button->addListener (this);
 }
 
 
@@ -318,7 +318,6 @@ void MainContentComponent::setMidiOutput (int index) {
 void MainContentComponent::comboBoxChanged (ComboBox* box)
 {
     if (box == &midiInputList) {
-        std::cout << &midiInputList << std::endl;
         setMidiInput  (midiInputList.getSelectedItemIndex());
     }
     if (box == &midiOutputList) {
@@ -359,8 +358,7 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
     
     if (record and setNotes) {
         temp.push_back(m);
-        
-        std::cout << MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3) << std::endl;
+
 		NoteData temp;
 		temp.note = MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
 		temp.note_integer = m.getNoteNumber();
@@ -369,10 +367,6 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
 		notes.push_back(temp);
 		//notes.push_back(MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3));
         bufferNotes = notes;
-        std::cout << "Notes: ";
-        for (NoteData n : bufferNotes)
-            std::cout << n.note << ' ';
-        std::cout << std::endl;
         
         const MessageManagerLock mmLock;
         notesBox.clear();
@@ -391,7 +385,6 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
     
     if (record and setRhythm) {
         times.push_back(time);
-        std::cout << timecode << std::endl;
         bufferTimes = times;
         
         const MessageManagerLock mmLock;
@@ -416,7 +409,6 @@ void MainContentComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, i
     
     if (record and setRhythm) {
         times.push_back(time);
-        std::cout << timecode << std::endl;
         bufferTimes = times;
         
         const MessageManagerLock mmLock;
@@ -432,16 +424,8 @@ MainContentComponent::IncomingMessageCallback::IncomingMessageCallback (MainCont
 : owner (o), message (m), source (s)
 {}
 
+
 void MainContentComponent::playNotes (std::vector<MidiMessage> temp) {
-//    String logstring = "";
-//    for (int i = 0; i < bufferNotes.size(); i++) {
-//        int midiNote =  convertNameToMidi(bufferNotes[i].note);
-//        std::cout << bufferNotes[i].note << " : " << midiNote << std::endl;
-//        logstring += bufferNotes[i].note + " : " + String(midiNote) + "\n";
-//        notesMidi.push_back(midiNote);
-//    }
-//    logFeedback(logstring);
-    
     if (!notes.empty()) {
         logFeedback("Playing notes.");
 //        MidiInput*  MidiIn;
@@ -457,33 +441,37 @@ void MainContentComponent::playNotes (std::vector<MidiMessage> temp) {
     }
 }
 
-std::vector<NoteData> MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times){
+
+std::vector<NoteData> MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times) {
     std::vector<NoteData> bufferOut;
-    std::cout << "size of notes: "<< notes.size() << std::endl << "size of times:" << times.size() << std::endl;
-    if (notes.empty() || times.empty()){
-        logFeedback("Record (1) Notes and (2) Tempo before combining tracks!");
+    
+    if (notes.empty() || times.empty()) {
+        logFeedback("Record (1) Notes and (2) Tempo before combining tracks.");
         return bufferOut; // Will be empty... TODO: handle this a better way
     }
+
     NoteData newNote;
     double timeZero = times[0]; // timeStart of first note, subtracted from all subsequent times
-                                // Leave a few milliseconds of buffer?
     
-    for (int i = 0; i < notes.size(); ++i){
+    for (int i = 0; i < notes.size(); ++i) {
         newNote.note = notes[i].note;
 		newNote.note_integer = notes[i].note_integer;
-        if (i < (times.size() / 2)){
+        
+        if (i < (times.size() / 2)) {
             newNote.timeStart = times[i * 2] - timeZero;
             newNote.timeEnd = times[(i * 2) + 1] - timeZero;
         }
         // Special case: user does not input rhythm for all notes
         // Default: set note to start 1.0 sec after last note ended, duration 0.5 seconds
-        else{
+        else {
             double lastNoteEnd = bufferOut[bufferOut.size()-1].timeEnd;
             newNote.timeStart = lastNoteEnd + 1.0;
             newNote.timeEnd = newNote.timeStart + 0.5;
         }
+        
         bufferOut.push_back(newNote);
     } // for (all notes recorded)
+    
     return bufferOut;
 }
 
@@ -538,8 +526,9 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         if (setNotes == false and setRhythm == false) {
             logFeedback("Select either \"Set notes\" or \"Set rhythm\" before recording.");
         }
-        else
+        else {
             record = true;
+        }
     }
     else if (buttonThatWasClicked == &stopRecordButton and record == true) {
         record = false;
@@ -569,10 +558,13 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     else if (buttonThatWasClicked == &clearButton){
         bufferNotes.clear(); notes.clear();
         bufferTimes.clear(); times.clear();
+        
         notesBox.clear();
         logNoteMessage("Notes: ");
+        
         rhythmBox.clear();
         logRhythmMessage("Times: ");
+        
         record = false;
         logFeedback("All recordings have been erased.");
     }
@@ -595,7 +587,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                         file << String(i) << std::endl;
                     }
                     file.close();
-                    logFeedback("Saved.");
+                    logFeedback("File saved.");
                 }
             }
             else {
@@ -637,16 +629,18 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                     }
                     file.close();
                     
-                    logFeedback("Loaded.");
+                    logFeedback("File loaded.");
                 }
             }
         }
     }
 }
 
+
 void MainContentComponent::runtimePermissionsCallback (bool wasGranted) {
     int numInputChannels = wasGranted ? 2 : 0;
     sharedAudioDeviceManager->initialise (numInputChannels, 2, nullptr, true, String(), nullptr);
 }
+
 
 Component* createMainContentComponent()     { return new MainContentComponent(); }

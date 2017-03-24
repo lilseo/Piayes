@@ -101,7 +101,6 @@ public:
     
     void resized() override;
     
-    
 private:
     static AudioDeviceManager& getSharedAudioDeviceManager();
     AudioDeviceManager& deviceManager;
@@ -132,11 +131,12 @@ private:
     TextButton saveButton;
     TextButton loadButton;
                                     
+    void setButton(TextButton* button, String text);
+                                    
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;
     
     SynthAudioSource synthAudioSource;
-
     
     std::vector<NoteData> notes;
     std::vector<double> times;
