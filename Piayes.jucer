@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="cnPcjk" name="Piayes" projectType="guiapp" version="1.0.0"
-              bundleIdentifier="com.yourcompany.Piayes" includeBinaryInAppConfig="0"
+              bundleIdentifier="com.yourcompany.Piayes" includeBinaryInAppConfig="1"
               jucerVersion="4.3.1">
   <MAINGROUP id="kPZeX6" name="Piayes">
     <GROUP id="{D4D25198-B916-5C78-90A4-CAFD0B682219}" name="Source">
@@ -20,20 +20,20 @@
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Piayes"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../../Downloads/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../../Downloads/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../Applications/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>

@@ -105,7 +105,6 @@ public:
     
     void resized() override;
     
-    
 private:
     static AudioDeviceManager& getSharedAudioDeviceManager();
     AudioDeviceManager& deviceManager;
@@ -140,15 +139,17 @@ private:
     TextButton saveButton;
     TextButton loadButton;
                                     
+    void setButton(TextButton* button, String text);
+                                    
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;
     
     SynthAudioSource synthAudioSource;
-
     
     std::vector<NoteData> notes;
     std::vector<double> times;
     std::vector<int> notesMidi;
+    std::vector<MidiMessage> temp;
     
     class IncomingMessageCallback   : public CallbackMessage {
       public:
@@ -157,7 +158,6 @@ private:
         MidiMessage message;
         String source;
     };
-
     
     /** Starts listening to a MIDI input device, enabling it if necessary. */
     void setMidiInput (int index);
@@ -175,7 +175,7 @@ private:
     // Handle callbacks from the midi device and on-screen keyboard
     void handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) override;
     
-    void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
+    void handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity);
     
     void handleNoteOff (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float /*velocity*/) override;
     
@@ -183,7 +183,7 @@ private:
      
     //void addMessageToList (const MidiMessage& message, const String& source);
     
-    void playNotes ();
+    void playNotes (std::vector<MidiMessage> temp);
     
     std::vector<NoteData> combineData(std::vector<NoteData> notes, std::vector<double> times);
     

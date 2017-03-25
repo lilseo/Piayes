@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4117BD44-4AFA-41C6-A3AE-7B4858D51966</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Piayes</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>32A6787E272874093950E6640126C9FFC0AD677D</key>
+		<string>github.com:lilseo/Piayes.git</string>
+		<key>C8ED2E531F2A53D631B760C164DEAF59AF7BE001</key>
+		<string>https://github.com/yhpham/JUCE-testing.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Builds/MacOSX/Piayes.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>32A6787E272874093950E6640126C9FFC0AD677D</key>
+		<string>../../../../../Piayes</string>
+		<key>C8ED2E531F2A53D631B760C164DEAF59AF7BE001</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/yhpham/JUCE-testing.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C8ED2E531F2A53D631B760C164DEAF59AF7BE001</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C8ED2E531F2A53D631B760C164DEAF59AF7BE001</string>
+			<key>IDESourceControlWCCName</key>
+			<string>JUCE-testing</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>32A6787E272874093950E6640126C9FFC0AD677D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Piayes</string>
+		</dict>
+	</array>
+</dict>
+</plist>
