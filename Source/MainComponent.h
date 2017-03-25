@@ -10,6 +10,10 @@
 #include <string>
 
 
+// a value based on what, if any, chord feature is active
+// 0 = no chord feature active, 1 = major
+int chordValue = 0;
+
 bool is_combine_button = false;
 
 struct SineWaveSound : public SynthesiserSound
@@ -124,6 +128,10 @@ private:
     TextButton clearButton;
     ToggleButton notesButton;
     ToggleButton rhythmButton;
+    ToggleButton singleNoteButton;
+    ToggleButton chordMajorButton;
+    ToggleButton chordMinorButton;
+                                    
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
