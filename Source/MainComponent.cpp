@@ -260,9 +260,22 @@ startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     rhythmButton.addListener (this);
     
     // putting in major chord activator
+    addAndMakeVisible (singleNoteButton);
+    singleNoteButton.setButtonText("Play A Single Note");
+    singleNoteButton.setRadioGroupId(2);
+    singleNoteButton.addListener(this);
+    
+    // putting in major chord activator
     addAndMakeVisible (chordMajorButton);
     chordMajorButton.setButtonText("Play Major Chords");
+    chordMajorButton.setRadioGroupId(2);
     chordMajorButton.addListener(this);
+    
+    // putting in major chord activator
+    addAndMakeVisible (chordMinorButton);
+    chordMinorButton.setButtonText("Play Minor Chords");
+    chordMinorButton.setRadioGroupId(2);
+    chordMinorButton.addListener(this);
     
     
     audioSourcePlayer.setSource (&synthAudioSource);
@@ -296,7 +309,9 @@ void MainContentComponent::resized() {
     notesButton.setBounds (16, 225, 150, 24);
     rhythmButton.setBounds (16, 250, 150, 24);
     
-    chordMajorButton.setBounds (16, 275, 150, 24);
+    singleNoteButton.setBounds(16, 275, 150, 24);
+    chordMajorButton.setBounds (16, 300, 150, 24);
+    chordMinorButton.setBounds(16, 325, 150, 24);
     
 }
 
@@ -582,12 +597,20 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         setNotes = false;
         setRhythm = true;
     }
+    else if (buttonThatWasClicked == &singleNoteButton) {
+        chordValue = 0;
+    }
     else if (buttonThatWasClicked == &chordMajorButton) {
-        if (chordValue == 1)
-            chordValue = 0;
-        else
-            chordValue = 1;
-        std::cout << chordValue;
+//        if (chordValue == 1)
+//            chordValue = 0;
+//        else
+        chordValue = 1;
+    }
+    else if (buttonThatWasClicked == &chordMinorButton) {
+//        if (chordValue == 2)
+//            chordValue = 0;
+//        else
+        chordValue = 2;
     }
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){

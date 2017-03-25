@@ -125,7 +125,9 @@ private:
     TextButton clearButton;
     ToggleButton notesButton;
     ToggleButton rhythmButton;
+    ToggleButton singleNoteButton;
     ToggleButton chordMajorButton;
+    ToggleButton chordMinorButton;
     
     bool record = false;
     bool setNotes = false;

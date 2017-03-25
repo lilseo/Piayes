@@ -209,6 +209,17 @@ void MidiKeyboardState::processNextMidiBuffer (MidiBuffer& buffer,
                 buffer.addEvent (m3, startSample + pos);
                 buffer.addEvent (m5, startSample + pos);
             }
+            else if (chordValue == 2) {
+                // value 2 is minor chord
+                MidiMessage m3(message);
+                m3.setNoteNumber((int) message.getNoteNumber() + 3); // the minor third
+                MidiMessage m5(message);
+                m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+                const int pos = jlimit (0, numSamples - 1, roundToInt ((time - firstEventToAdd) * scaleFactor));
+                buffer.addEvent (message, startSample + pos);
+                buffer.addEvent (m3, startSample + pos);
+                buffer.addEvent (m5, startSample + pos);
+            }
             else {
                 // default to normal
                 const int pos = jlimit (0, numSamples - 1, roundToInt ((time - firstEventToAdd) * scaleFactor));
