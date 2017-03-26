@@ -12,9 +12,6 @@ namespace BinaryData
     extern const char*   tile_background_png;
     const int            tile_background_pngSize = 151;
 
-    extern const char*   cello_wav;
-    const int            cello_wavSize = 46348;
-
     extern const char*   demo_table_data_xml;
     const int            demo_table_data_xmlSize = 5239;
 
