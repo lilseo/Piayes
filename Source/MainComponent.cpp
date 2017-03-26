@@ -104,6 +104,7 @@ SynthAudioSource::SynthAudioSource (MidiKeyboardState& keyState)  : keyboardStat
     // Add some voices to our synth, to play the sounds..
     for (int i = 4; --i >= 0;) {
         synth.addVoice (new SineWaveVoice());   // These voices will play our custom sine-wave sounds..
+        synth.addVoice (new SamplerVoice());
     }
 
     // ..and add a sound for them to play...
@@ -112,8 +113,34 @@ SynthAudioSource::SynthAudioSource (MidiKeyboardState& keyState)  : keyboardStat
 
 
 void SynthAudioSource::setUsingSineWaveSound() {
+    std::cout << "Set using sine wave sound." << std::endl;
     synth.clearSounds();
     synth.addSound (new SineWaveSound());
+}
+
+
+void SynthAudioSource::setUsingSampledSound() {
+    std::cout << "Set using sampled sound." << std::endl;
+    WavAudioFormat wavFormat;
+    
+    FileInputStream* cello = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../Electro-Tom.wav"));
+    std::cout << File::getCurrentWorkingDirectory().getFullPathName() << std::endl;
+    if (cello->openedOk()) {
+        ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (cello,true));
+        
+        BigInteger allNotes;
+        allNotes.setRange (0, 128, true);
+        
+        synth.clearSounds();
+        synth.addSound (new SamplerSound ("demo sound",
+                                          *audioReader,
+                                          allNotes,
+                                          74,   // root midi note
+                                          0.1,  // attack time
+                                          0.1,  // release time
+                                          10.0  // maximum sample length
+                                          ));
+    }
 }
 
 
@@ -224,6 +251,17 @@ MainContentComponent::MainContentComponent()
     rhythmButton.setButtonText ("Set Rhythm");
     rhythmButton.setRadioGroupId (1);
     rhythmButton.addListener (this);
+        
+    addAndMakeVisible (sineButton);
+    sineButton.setButtonText ("Synth");
+    sineButton.setRadioGroupId (2);
+    sineButton.addListener (this);
+    sineButton.setToggleState (true, dontSendNotification);
+        
+    addAndMakeVisible (drumButton);
+    drumButton.setButtonText ("Drums");
+    drumButton.setRadioGroupId (2);
+    drumButton.addListener (this);
     
     addAndMakeVisible (saveButton);
     setButton(&saveButton, "Save");
@@ -264,11 +302,15 @@ void MainContentComponent::resized() {
     playNotesButton.setBounds (16, 150, 150, 24);
     combineButton.setBounds (16, 175, 150, 24);
     clearButton.setBounds (16, 200, 150, 24);
+    
     notesButton.setBounds (16, 225, 150, 24);
     rhythmButton.setBounds (16, 250, 150, 24);
     
-    saveButton.setBounds (16, 300, 150, 24);
-    loadButton.setBounds (16, 325, 150, 24);
+    sineButton.setBounds (16, 275, 150, 24);
+    drumButton.setBounds (16, 300, 150, 24);
+    
+    saveButton.setBounds (16, 325, 150, 24);
+    loadButton.setBounds (16, 350, 150, 24);
 }
 
 
@@ -537,10 +579,12 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         playNotes(temp);
     }
     else if (buttonThatWasClicked == &notesButton) {
+        std::cout << "Clicked notes button." << std::endl;
         setNotes = true;
         setRhythm = false;
     }
     else if (buttonThatWasClicked == &rhythmButton) {
+        std::cout << "Clicked rhythm button." << std::endl;
         setNotes = false;
         setRhythm = true;
     }
@@ -633,6 +677,14 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                 }
             }
         }
+    }
+    if (buttonThatWasClicked == &sineButton) {
+        std::cout << "Clicked sine button." << std::endl;
+        synthAudioSource.setUsingSineWaveSound();
+    }
+    else if (buttonThatWasClicked == &drumButton) {
+        std::cout << "Clicked drum button." << std::endl;
+        synthAudioSource.setUsingSampledSound();
     }
 }
 

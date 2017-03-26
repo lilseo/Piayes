@@ -126,6 +126,10 @@ private:
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
+                                    
+    ToggleButton sineButton;
+    ToggleButton drumButton;
+    TextButton rand;
                          
     ToggleButton nativeButton;                                
     TextButton saveButton;
