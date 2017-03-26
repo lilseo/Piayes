@@ -295,7 +295,7 @@ MainContentComponent::MainContentComponent()
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 
-    setSize (600, 400);
+    setSize (800, 600);
 }
 
 
@@ -332,12 +332,12 @@ void MainContentComponent::resized() {
     sineButton.setBounds (16, 275, 150, 24);
     drumButton.setBounds (16, 300, 150, 24);
 
-    saveButton.setBounds (16, 300, 150, 24);
-    loadButton.setBounds (16, 325, 150, 24);
+    saveButton.setBounds (16, 325, 150, 24);
+    loadButton.setBounds (16, 350, 150, 24);
     
-    singleNoteButton.setBounds(16, 350, 150, 24);
-    chordMajorButton.setBounds (16, 375, 150, 24);
-    chordMinorButton.setBounds(16, 400, 150, 24);
+    singleNoteButton.setBounds(16, 375, 150, 24);
+    chordMajorButton.setBounds (16, 400, 150, 24);
+    chordMinorButton.setBounds(16, 425, 150, 24);
 }
 
 
