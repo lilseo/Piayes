@@ -169,6 +169,11 @@ void SynthAudioSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
 	if (!is_combine_button) {
 		keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, true);
 	}
+    else if (chordValue) {
+        // if the chord feature is active run the overloaded version pertaining to that
+        // to do
+//        keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, true, chordValue);
+    }
 	else {
 		keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, bufferOut, true);
 	}
@@ -269,6 +274,24 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (loadButton);
     setButton(&loadButton, "Load");
     
+    // putting in major chord activator
+    addAndMakeVisible (singleNoteButton);
+    singleNoteButton.setButtonText("Play A Single Note");
+    singleNoteButton.setRadioGroupId(2);
+    singleNoteButton.addListener(this);
+    
+    // putting in major chord activator
+    addAndMakeVisible (chordMajorButton);
+    chordMajorButton.setButtonText("Play Major Chords");
+    chordMajorButton.setRadioGroupId(2);
+    chordMajorButton.addListener(this);
+    
+    // putting in major chord activator
+    addAndMakeVisible (chordMinorButton);
+    chordMinorButton.setButtonText("Play Minor Chords");
+    chordMinorButton.setRadioGroupId(2);
+    chordMinorButton.addListener(this);
+    
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 
@@ -305,12 +328,16 @@ void MainContentComponent::resized() {
     
     notesButton.setBounds (16, 225, 150, 24);
     rhythmButton.setBounds (16, 250, 150, 24);
-    
+
     sineButton.setBounds (16, 275, 150, 24);
     drumButton.setBounds (16, 300, 150, 24);
+
+    saveButton.setBounds (16, 300, 150, 24);
+    loadButton.setBounds (16, 325, 150, 24);
     
-    saveButton.setBounds (16, 325, 150, 24);
-    loadButton.setBounds (16, 350, 150, 24);
+    singleNoteButton.setBounds(16, 350, 150, 24);
+    chordMajorButton.setBounds (16, 375, 150, 24);
+    chordMinorButton.setBounds(16, 400, 150, 24);
 }
 
 
@@ -588,6 +615,22 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         setNotes = false;
         setRhythm = true;
     }
+    else if (buttonThatWasClicked == &singleNoteButton) {
+        chordValue = 0;
+    }
+    else if (buttonThatWasClicked == &chordMajorButton) {
+        //        if (chordValue == 1)
+        //            chordValue = 0;
+        //        else
+        chordValue = 1;
+    }
+    else if (buttonThatWasClicked == &chordMinorButton) {
+        //        if (chordValue == 2)
+        //            chordValue = 0;
+        //        else
+        chordValue = 2;
+    }
+    // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){
 		bufferOut = combineData(bufferNotes, bufferTimes);
         if (!bufferOut.empty()) {
