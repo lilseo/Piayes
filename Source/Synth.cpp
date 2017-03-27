@@ -165,7 +165,7 @@ void SynthAudioSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
         // keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, true, chordValue);
     }
     else {
-        keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, bufferOut, true);
+//        keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, bufferOut, true);
     }
     
     // and now get the synth to process the midi events and generate its output.

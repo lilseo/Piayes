@@ -70,6 +70,8 @@ MainContentComponent::MainContentComponent()
     notesButton.setButtonText ("Set Notes");
     notesButton.setRadioGroupId (1);
     notesButton.addListener (this);
+    notesButton.setToggleState (true, dontSendNotification);
+    setNotes = true;
     
     addAndMakeVisible (rhythmButton);
     rhythmButton.setButtonText ("Set Rhythm");
@@ -98,6 +100,7 @@ MainContentComponent::MainContentComponent()
     singleNoteButton.setButtonText("Play A Single Note");
     singleNoteButton.setRadioGroupId(3);
     singleNoteButton.addListener(this);
+    singleNoteButton.setToggleState (true, dontSendNotification);
     
     // putting in major chord activator
     addAndMakeVisible (chordMajorButton);
