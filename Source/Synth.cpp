@@ -114,22 +114,45 @@ void SynthAudioSource::setUsingSineWaveSound() {
 void SynthAudioSource::setUsingSampledSound() {
     WavAudioFormat wavFormat;
     
-    FileInputStream* drum = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../Electro-Tom.wav"));
-    if (drum->openedOk()) {
-        ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (drum,true));
+    if (drum == true) {
+        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../Electro-Tom.wav"));
         
-        BigInteger allNotes;
-        allNotes.setRange (0, 128, true);
+        if (sound->openedOk()) {
+            ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
+            
+            BigInteger allNotes;
+            allNotes.setRange (0, 128, true);
+            
+            synth.clearSounds();
+            synth.addSound (new SamplerSound ("demo sound",
+                                              *audioReader,
+                                              allNotes,
+                                              74,   // root midi note
+                                              0.1,  // attack time
+                                              0.1,  // release time
+                                              10.0  // maximum sample length
+                                              ));
+        }
+    }
+    else if (bass == true) {
+        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../bass.wav"));
         
-        synth.clearSounds();
-        synth.addSound (new SamplerSound ("demo sound",
-                                          *audioReader,
-                                          allNotes,
-                                          74,   // root midi note
-                                          0.1,  // attack time
-                                          0.1,  // release time
-                                          10.0  // maximum sample length
-                                          ));
+        if (sound->openedOk()) {
+            ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
+            
+            BigInteger allNotes;
+            allNotes.setRange (0, 128, true);
+            
+            synth.clearSounds();
+            synth.addSound (new SamplerSound ("demo sound",
+                                              *audioReader,
+                                              allNotes,
+                                              74,   // root midi note
+                                              0.1,  // attack time
+                                              0.1,  // release time
+                                              10.0  // maximum sample length
+                                              ));
+        }
     }
 }
 

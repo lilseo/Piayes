@@ -10,6 +10,9 @@ extern int chordValue;
 extern bool is_combine_button;
 extern std::vector<NoteData> bufferOut;
 
+extern bool drum;
+extern bool bass;
+
 struct SineWaveSound : public SynthesiserSound {
     SineWaveSound();
     

@@ -88,6 +88,11 @@ MainContentComponent::MainContentComponent()
     drumButton.setButtonText ("Drums");
     drumButton.setRadioGroupId (2);
     drumButton.addListener (this);
+        
+    addAndMakeVisible (bassButton);
+    bassButton.setButtonText ("Bass");
+    bassButton.setRadioGroupId (2);
+    bassButton.addListener (this);
     
     addAndMakeVisible (saveButton);
     setButton(&saveButton, "Save");
@@ -153,13 +158,14 @@ void MainContentComponent::resized() {
 
     sineButton.setBounds (16, 275, 150, 24);
     drumButton.setBounds (16, 300, 150, 24);
+    bassButton.setBounds (16, 325, 150, 24);
 
-    saveButton.setBounds (16, 325, 150, 24);
-    loadButton.setBounds (16, 350, 150, 24);
+    saveButton.setBounds (16, 350, 150, 24);
+    loadButton.setBounds (16, 375, 150, 24);
     
-    singleNoteButton.setBounds(16, 375, 150, 24);
-    chordMajorButton.setBounds (16, 400, 150, 24);
-    chordMinorButton.setBounds(16, 425, 150, 24);
+    singleNoteButton.setBounds(16, 400, 150, 24);
+    chordMajorButton.setBounds (16, 425, 150, 24);
+    chordMinorButton.setBounds(16, 450, 150, 24);
 }
 
 
@@ -547,6 +553,13 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         synthAudioSource.setUsingSineWaveSound();
     }
     else if (buttonThatWasClicked == &drumButton) {
+        drum = true;
+        bass = false;
+        synthAudioSource.setUsingSampledSound();
+    }
+    else if (buttonThatWasClicked == &bassButton) {
+        drum = false;
+        bass = true;
         synthAudioSource.setUsingSampledSound();
     }
 }

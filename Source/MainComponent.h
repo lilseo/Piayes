@@ -23,6 +23,8 @@ static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
 std::vector<NoteData> bufferOut;
 std::vector<NoteData> bufferNotes;
 std::vector<double> bufferTimes;
+bool drum = false;
+bool bass = false;
 
 int chordValue = 0;
 bool is_combine_button = false;
@@ -71,7 +73,7 @@ private:
                                     
     ToggleButton sineButton;
     ToggleButton drumButton;
-    TextButton rand;
+    ToggleButton bassButton;
                          
     ToggleButton nativeButton;                                
     TextButton saveButton;
