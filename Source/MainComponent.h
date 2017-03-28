@@ -80,6 +80,13 @@ private:
     TextButton loadButton;
                                     
     void setButton(TextButton* button, String text);
+	
+	Label feedbackLabel;
+	Label instrumentsLabel;
+	Label chordsLabel;
+	Label editingLabel;
+	Label MemoryLabel;
+	Label melodyRhythm;
                                     
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;

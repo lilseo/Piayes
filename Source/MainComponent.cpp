@@ -72,33 +72,67 @@ MainContentComponent::MainContentComponent()
     notesButton.addListener (this);
     notesButton.setToggleState (true, dontSendNotification);
     setNotes = true;
+	notesButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
     addAndMakeVisible (rhythmButton);
     rhythmButton.setButtonText ("Set Rhythm");
     rhythmButton.setRadioGroupId (1);
     rhythmButton.addListener (this);
+	rhythmButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
         
     addAndMakeVisible (sineButton);
     sineButton.setButtonText ("Synth");
     sineButton.setRadioGroupId (2);
     sineButton.addListener (this);
     sineButton.setToggleState (true, dontSendNotification);
+	sineButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
         
     addAndMakeVisible (drumButton);
     drumButton.setButtonText ("Drums");
     drumButton.setRadioGroupId (2);
     drumButton.addListener (this);
+	drumButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
         
     addAndMakeVisible (bassButton);
     bassButton.setButtonText ("Bass");
     bassButton.setRadioGroupId (2);
     bassButton.addListener (this);
+	bassButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
     addAndMakeVisible (saveButton);
     setButton(&saveButton, "Save");
     
     addAndMakeVisible (loadButton);
     setButton(&loadButton, "Load");
+
+
+	// Titles
+	addAndMakeVisible(feedbackLabel);
+	feedbackLabel.setText("Real Time Feedback", dontSendNotification);
+	feedbackLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	
+	addAndMakeVisible(instrumentsLabel);
+	instrumentsLabel.setText("Instruments", dontSendNotification);
+	instrumentsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+
+	addAndMakeVisible(chordsLabel);
+	chordsLabel.setText("Chords", dontSendNotification);
+	chordsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+
+	addAndMakeVisible(editingLabel);
+	editingLabel.setText("Recording & Editing", dontSendNotification);
+	editingLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	
+	addAndMakeVisible(melodyRhythm);
+	melodyRhythm.setText("Melody & Rhythm", dontSendNotification);
+	melodyRhythm.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+
+	addAndMakeVisible(MemoryLabel);
+	MemoryLabel.setText("Save & Load", dontSendNotification);
+	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	//MemoryLabel.
+
+	
     
     // putting in major chord activator
     addAndMakeVisible (singleNoteButton);
@@ -106,21 +140,27 @@ MainContentComponent::MainContentComponent()
     singleNoteButton.setRadioGroupId(3);
     singleNoteButton.addListener(this);
     singleNoteButton.setToggleState (true, dontSendNotification);
+	singleNoteButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
     // putting in major chord activator
     addAndMakeVisible (chordMajorButton);
     chordMajorButton.setButtonText("Play Major Chords");
     chordMajorButton.setRadioGroupId(3);
     chordMajorButton.addListener(this);
+	chordMajorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
     // putting in major chord activator
     addAndMakeVisible (chordMinorButton);
     chordMinorButton.setButtonText("Play Minor Chords");
     chordMinorButton.setRadioGroupId(3);
     chordMinorButton.addListener(this);
+	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
+	
+	
+		
 
     setSize (800, 600);
 }
@@ -143,29 +183,37 @@ void MainContentComponent::resized() {
     Rectangle<int> area (getLocalBounds());
     keyboardComponent.setBounds (area.removeFromTop (80).reduced(8));
     
-    notesBox.setBounds (200, 100, 150, 225);
-    rhythmBox.setBounds (400, 100, 150, 225);
-    feedbackBox.setBounds(200, 337.5, 350, 50);
+    notesBox.setBounds (240, 275, 150, 225);
+    rhythmBox.setBounds (410, 275, 150, 225);
+    feedbackBox.setBounds(240, 525, 320, 50);
     
-    recordButton.setBounds (16, 100, 150, 24);
-    stopRecordButton.setBounds (16, 125, 150, 24);
-    playNotesButton.setBounds (16, 150, 150, 24);
-    combineButton.setBounds (16, 175, 150, 24);
-    clearButton.setBounds (16, 200, 150, 24);
+    recordButton.setBounds (620, 115, 150, 24);
+    stopRecordButton.setBounds (620, 140, 150, 24);
+    playNotesButton.setBounds (620, 165, 150, 24);
+    combineButton.setBounds (620, 190, 150, 24);
+    clearButton.setBounds (620, 215, 150, 24);
     
-    notesButton.setBounds (16, 225, 150, 24);
-    rhythmButton.setBounds (16, 250, 150, 24);
+    notesButton.setBounds (420, 115, 150, 24);
+    rhythmButton.setBounds (420, 140, 150, 24);
 
-    sineButton.setBounds (16, 275, 150, 24);
-    drumButton.setBounds (16, 300, 150, 24);
-    bassButton.setBounds (16, 325, 150, 24);
+    sineButton.setBounds (50, 115, 150, 24);
+    drumButton.setBounds (50, 140, 150, 24);
+    bassButton.setBounds (50, 165, 150, 24);
 
-    saveButton.setBounds (16, 350, 150, 24);
-    loadButton.setBounds (16, 375, 150, 24);
+    saveButton.setBounds (620, 375, 150, 24);
+    loadButton.setBounds (620, 400, 150, 24);
     
-    singleNoteButton.setBounds(16, 400, 150, 24);
-    chordMajorButton.setBounds (16, 425, 150, 24);
-    chordMinorButton.setBounds(16, 450, 150, 24);
+    singleNoteButton.setBounds(195, 115, 150, 24);
+    chordMajorButton.setBounds (195, 140, 150, 24);
+    chordMinorButton.setBounds(195, 165, 150, 24);
+	
+	feedbackLabel.setBounds(335, 245, 150, 20);
+	instrumentsLabel.setBounds(50, 90, 150, 20);
+	chordsLabel.setBounds(240, 90, 150, 20);
+	editingLabel.setBounds(630, 90, 150, 20);
+	melodyRhythm.setBounds(415, 90, 150, 20);
+	MemoryLabel.setBounds(650, 350, 150, 20);
+
 }
 
 

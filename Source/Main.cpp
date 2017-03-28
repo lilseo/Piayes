@@ -45,7 +45,7 @@ class PiayesApplication  : public JUCEApplication {
      */
     class MainWindow    : public DocumentWindow {
       public:
-        MainWindow (String name)  : DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons) {
+        MainWindow (String name)  : DocumentWindow (name, juce::Colour(47, 84, 145), DocumentWindow::allButtons) {
             setUsingNativeTitleBar (true);
             setContentOwned (createMainContentComponent(), true);
             setResizable (true, true);
