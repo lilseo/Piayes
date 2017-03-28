@@ -99,6 +99,12 @@ MainContentComponent::MainContentComponent()
     bassButton.addListener (this);
 	bassButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
     
+    addAndMakeVisible (pianoButton);
+    pianoButton.setButtonText ("Piano");
+    pianoButton.setRadioGroupId (2);
+    pianoButton.addListener (this);
+    pianoButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+        
     addAndMakeVisible (saveButton);
     setButton(&saveButton, "Save");
     
@@ -199,6 +205,7 @@ void MainContentComponent::resized() {
     sineButton.setBounds (50, 115, 150, 24);
     drumButton.setBounds (50, 140, 150, 24);
     bassButton.setBounds (50, 165, 150, 24);
+    pianoButton.setBounds (50, 190, 150, 24);
 
     saveButton.setBounds (620, 375, 150, 24);
     loadButton.setBounds (620, 400, 150, 24);
@@ -603,11 +610,19 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     else if (buttonThatWasClicked == &drumButton) {
         drum = true;
         bass = false;
+        piano = false;
         synthAudioSource.setUsingSampledSound();
     }
     else if (buttonThatWasClicked == &bassButton) {
         drum = false;
         bass = true;
+        piano = false;
+        synthAudioSource.setUsingSampledSound();
+    }
+    else if (buttonThatWasClicked == &pianoButton) {
+        drum = false;
+        bass = false;
+        piano = true;
         synthAudioSource.setUsingSampledSound();
     }
 }

@@ -12,6 +12,7 @@ extern std::vector<NoteData> bufferOut;
 
 extern bool drum;
 extern bool bass;
+extern bool piano;
 
 struct SineWaveSound : public SynthesiserSound {
     SineWaveSound();

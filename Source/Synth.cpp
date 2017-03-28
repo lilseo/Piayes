@@ -154,6 +154,26 @@ void SynthAudioSource::setUsingSampledSound() {
                                               ));
         }
     }
+    else if (piano == true) {
+        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../piano.wav"));
+        
+        if (sound->openedOk()) {
+            ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
+            
+            BigInteger allNotes;
+            allNotes.setRange (0, 128, true);
+            
+            synth.clearSounds();
+            synth.addSound (new SamplerSound ("demo sound",
+                                              *audioReader,
+                                              allNotes,
+                                              74,   // root midi note
+                                              0.1,  // attack time
+                                              0.1,  // release time
+                                              10.0  // maximum sample length
+                                              ));
+        }
+    }
 }
 
 
