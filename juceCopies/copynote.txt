@@ -1,0 +1,2 @@
+Note: These files exist in the core Juce library and often get overwritten by Juce. 
+Because of this we have opted to host them here as a way to easily copy over their corresponding files and uncomment. 
