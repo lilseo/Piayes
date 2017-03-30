@@ -1,0 +1,1 @@
+/Users/yelenapham/Library/Developer/Xcode/DerivedData/Piayes-axdudberqfyklnbuhinkcufaifii/Build/Intermediates/ArchiveIntermediates/Piayes (App)/InstallationBuildProductsLocation/Users/yelenapham/Applications/Piayes.app
