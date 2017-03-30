@@ -1,17 +1,29 @@
 ###EECS 481 - Winter 2017 <br>
 Brad's DAW Group 1 - *Piayes* <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Beta Release <br> <br>
+Brad's DAW GROUP 2 - B.R.A.D. <b> Anna Billings, Mathew Wiesman, Chris Salem, Dan Verderese <br>
 
-####What is *Piayes*<br>
+####What is *B.R.A.D.:Piayes*<br>
 *Piayes* is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
 Step 1: the user records a melody without worrying about the tempo/rhythm of the song.<br>
 Step 2: the user records the desired tempo and length of each of the notes previously played by using any key on the keyboard.<br>
 Step 3: the application will map the keys from step 1 to the timestamps from step 2 and output the resulting song.<br>
 *Note that audio output will only be available on the Beta release.<br><br>
 
-####Deploying *Piayes*<br>
+####Features (Beta) <br>
+Chord Triggering <br>
+Octave Switching at the touch of a button <br>
+Record/Edit/Playback <br>
+Change Instruments <br>
+And Many More (Coming) <br>
+
+#### UI (Beta) <br>
+![alt tag](https://cloud.githubusercontent.com/assets/14114194/24487143/b4ef5758-14db-11e7-9f9e-55000df43239.png) 
+<br>
+
+####Deploying *Piayes:B.R.A.D.*<br>
 Run the provided executable.
 
-####Using *Piayes*<br>
+####Using *Piayes:B.R.A.D.*<br>
 1. Connect a MIDI keyboard to your machine or use the piano user interface.<br>
 2. Click on the **Record** button and select the **Set Notes** mode to save the keys of the notes played.<br>
 3. The application will save and output the keys, but not the timestamps, of all the notes played.<br>
@@ -26,4 +38,30 @@ Run the provided executable.
 In the Beta release we have aimed to combine our groups together in order to give Brad a better playing experience. After working and learning our systems for the alpha release we met up and made the decision that it was best for Team B.R.A.D. to take their ideas and their code and integrate it into Team Piayes' project (and git hub repo) since going the other way would have been substantially more difficult and would only result in a slightly better design. We felt that in the end our product should be focused on creating something to help Brad play again and not on splitting things in such a way that each groups contributions are easily identifiable all at the cost of making it harder to use. <br> 
 While Team Piayes will continuing to focus on the editing features outlined above, Team B.R.A.D. will focus on the "live" playing aspects, including volume control, octave switching, and chord triggering. <br>
 For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, Daniel Verderese, and Chris Salem) see the original github repo: https://github.com/mwiesman/B.R.A.D.<br>
+
+####Working with B.R.A.D:Piayes On Your Own <br>
+1. Download JUCE<br> 
+2. Download/Clone the Piayes repo<br> 
+3. Open the Piayes.Jucer file from the Piayes repo directory in the ProJucer application<br> 
+4. From the config tab:<br> 
+	a. Select “juce_audio_basics” under “Modules”<br> 
+	b. Change the path to Xcode to be the the Modules folder in your copy of JUCE<br> 
+	c. Select “Modules”<br> 
+	d. Click on “juce_audio_basics” and then click “Set path for all modules” followed by “Copy the path from the module ‘juce_audio_basics’ to all other modules<br> 
+	e. Select “Piayes” (or the name of the project) and make sure “include BinaryData.h in the AppConfig.h file” is UNCHECKED<br> 
+5. From the files tab:<br> 
+	a. Make sure the “Source” folder contains BinaryData.cpp, BinaryData.h, MainComponent.h, MainComponent.cpp, and Main.Cpp. Only the cpp files should have “compile” checked. <br> 
+6. Click “Save Project and Open in IDE…” to open the project in XCode/the IDE selected<br> 
+7. Within XCode:<br> 
+	a. Add the “Synth.cpp” and “Synth.h” into the Source file in the project. These files are located in the source folder in the main project directory that was cloned. <br> 
+	b. Under the “Juce Modules/juce_audio_basics/midi” folder there are two files:<br> 
+	“juce_MidiKeyboardState.cpp” and “juce_MidiKeyboardState.h”<br> 
+	c. In the Piayes project folder there is a folder called “juceCopies” that contains a modified version above two files. Copy the contents of these files into the ones in the midi folder and uncomment them. <br> 
+	d. Build, Compile and Run!<br> 
+8. Play!<br> 
+
+Make an executable: Xcode -> Product -> Archive <br>
+Click the Export button -> Export as a Mac Application -> Save it <br> 
+
+Open and Play!<br> 
 
