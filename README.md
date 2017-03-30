@@ -1,6 +1,6 @@
 ###EECS 481 - Winter 2017 <br>
-Brad's DAW Group 1 - *Piayes* <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Beta Release <br> <br>
-Brad's DAW GROUP 2 - B.R.A.D. <b> Anna Billings, Mathew Wiesman, Chris Salem, Dan Verderese <br>
+Brad's DAW Group 1 - *Piayes* <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Beta Release <br>
+Brad's DAW GROUP 2 - *B.R.A.D.* <br> Anna Billings, Mathew Wiesman, Chris Salem, Dan Verderese <br> <br>
 
 ####What is *B.R.A.D.:Piayes*<br>
 *Piayes* is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
