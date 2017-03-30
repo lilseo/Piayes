@@ -1,5 +1,5 @@
 ###EECS 481 - Winter 2017 <br>
-Brad's DAW Group 1 - *Piayes* <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Alpha Release <br> <br>
+Brad's DAW Group 1 - *Piayes* <br> Akansha Agarwal, Lillian Seo, Pedro Fialho, Yelena Pham <br> Beta Release <br> <br>
 
 ####What is *Piayes*<br>
 *Piayes* is an audio recording and editing application that provides an easy alternative for a user to create a song.<br>
@@ -9,15 +9,7 @@ Step 3: the application will map the keys from step 1 to the timestamps from ste
 *Note that audio output will only be available on the Beta release.<br><br>
 
 ####Deploying *Piayes*<br>
-1. Download the *JUCE* framework at https://www.juce.com/get-juce.<br>
-2. Clone this GIT repository.
-2. Run *Piayes.jucer*, which will open up a *Projucer* window.<br>
-3. Select **Config/Modules/juce_audio_basics**. There should be an error message regarding a path not found.<br>
-4. Change the path to where *JUCE/modules* has been saved locally.<br>
-5. Go back to **Config/Modules** and select all the paths.<br>
-6. Click on **Set paths for all modules** followed by **Copy the path from the module "juce_audio_basics" to all other modules**.<br>
-7. Click on **Save Project and Open on IDE** on the lower left corner of the *Projucer* window.<br>
-8. Build and run the application on your IDE.<br><br>
+Run the provided executable.
 
 ####Using *Piayes*<br>
 1. Connect a MIDI keyboard to your machine or use the piano user interface.<br>
