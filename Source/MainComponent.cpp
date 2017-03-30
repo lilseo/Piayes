@@ -111,32 +111,39 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (loadButton);
     setButton(&loadButton, "Load");
 
+	//Font::bold
 
 	// Titles
 	addAndMakeVisible(feedbackLabel);
 	feedbackLabel.setText("Real Time Feedback", dontSendNotification);
 	feedbackLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	feedbackLabel.setFont(juce::Font(20, bold));
+
 	
 	addAndMakeVisible(instrumentsLabel);
 	instrumentsLabel.setText("Instruments", dontSendNotification);
 	instrumentsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	instrumentsLabel.setFont(juce::Font(20, bold));
 
 	addAndMakeVisible(chordsLabel);
 	chordsLabel.setText("Chords", dontSendNotification);
 	chordsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	chordsLabel.setFont(juce::Font(20, bold));
 
 	addAndMakeVisible(editingLabel);
 	editingLabel.setText("Recording & Editing", dontSendNotification);
 	editingLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	editingLabel.setFont(juce::Font(20, bold));
 	
 	addAndMakeVisible(melodyRhythm);
 	melodyRhythm.setText("Melody & Rhythm", dontSendNotification);
 	melodyRhythm.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+	melodyRhythm.setFont(juce::Font(20, bold));
 
 	addAndMakeVisible(MemoryLabel);
 	MemoryLabel.setText("Save & Load", dontSendNotification);
 	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	//MemoryLabel.
+	MemoryLabel.setFont(juce::Font(20, bold));
 
 	
     
@@ -147,6 +154,8 @@ MainContentComponent::MainContentComponent()
     singleNoteButton.addListener(this);
     singleNoteButton.setToggleState (true, dontSendNotification);
 	singleNoteButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+	
+	//(juce::Font(20, bold));
     
     // putting in major chord activator
     addAndMakeVisible (chordMajorButton);
@@ -161,6 +170,7 @@ MainContentComponent::MainContentComponent()
     chordMinorButton.setRadioGroupId(3);
     chordMinorButton.addListener(this);
 	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+	
     
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
@@ -214,12 +224,12 @@ void MainContentComponent::resized() {
     chordMajorButton.setBounds (195, 140, 150, 24);
     chordMinorButton.setBounds(195, 165, 150, 24);
 	
-	feedbackLabel.setBounds(335, 245, 150, 20);
-	instrumentsLabel.setBounds(50, 90, 150, 20);
-	chordsLabel.setBounds(240, 90, 150, 20);
-	editingLabel.setBounds(630, 90, 150, 20);
-	melodyRhythm.setBounds(415, 90, 150, 20);
-	MemoryLabel.setBounds(650, 350, 150, 20);
+	feedbackLabel.setBounds(310, 245, 200, 20);
+	instrumentsLabel.setBounds(40, 90, 200, 20);
+	chordsLabel.setBounds(230, 90, 200, 20);
+	editingLabel.setBounds(605, 90, 200, 20);
+	melodyRhythm.setBounds(385, 90, 200, 20);
+	MemoryLabel.setBounds(640, 350, 200, 20);
 
 }
 
