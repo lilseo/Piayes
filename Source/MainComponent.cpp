@@ -10,28 +10,7 @@ MainContentComponent::MainContentComponent()
     keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
     startTime (Time::getMillisecondCounterHiRes() * 0.001) {
     
-    // Set up MIDI input if keyboard is plugged in
-    const StringArray midiInputs (MidiInput::getDevices());
-    midiInputList.addItemList (midiInputs, 1);
-    midiInputList.addListener (this);
-    
-    // Checks if there are any enabled devices - never true for alpha, might be useful for beta
-    for (int i = 0; i < midiInputs.size(); ++i) {
-        if (deviceManager.isMidiInputEnabled(midiInputs[i])) {
-            setMidiInput (i);
-            break;
-        }
-    
-    }
-    
-    // If no MIDI enabled - always true for alpha, might be useful for beta
-    if (midiInputList.getSelectedId() == 0) {
-        setMidiInput (0); // called with or without MIDI keyboard
-    }
-    
-    // MIDI Outputs - not working yet
-    midiOutputList.addItemList (MidiOutput::getDevices(), 1);
-    midiOutputList.addListener (this);
+		
     
     // Set the UI Controls
     addAndMakeVisible (keyboardComponent);
@@ -171,7 +150,6 @@ MainContentComponent::MainContentComponent()
     chordMinorButton.addListener(this);
 	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
 	
-    
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 	
@@ -245,46 +223,12 @@ AudioDeviceManager& MainContentComponent::getSharedAudioDeviceManager() {
 }
 
 
-/** Starts listening to a MIDI input device, enabling it if necessary. */
-void MainContentComponent::setMidiInput (int index) {
-    const StringArray list (MidiInput::getDevices()); // list will contain only the MIDI keyboard, if connected
-    
-    deviceManager.removeMidiInputCallback (list[lastInputIndex], this);
-    
-    const String newInput(list[index]); // newInput is either the MIDI keyboard or null if we're just using the UI
-    
-    if (! deviceManager.isMidiInputEnabled(newInput)) { // always the case for alpha
-        deviceManager.setMidiInputEnabled (newInput, true);
-    }
-    
-    // MididInputCallback receives messages from a physical MIDI input device
-    deviceManager.addMidiInputCallback (newInput, this);
-    midiInputList.setSelectedId (index + 1, dontSendNotification);
-    
-    lastInputIndex = index;
-}
-
-
-// Not working yet - beta material
-void MainContentComponent::setMidiOutput (int index) {
-    currentMidiOutput = nullptr;
-    
-    if (MidiOutput::getDevices() [index].isNotEmpty()) {
-        currentMidiOutput = MidiOutput::openDevice (index);
-        jassert (currentMidiOutput);
-    }
-}
 
 
 // need to implement this for application to run
 void MainContentComponent::comboBoxChanged (ComboBox* box)
 {
-    if (box == &midiInputList) {
-        setMidiInput  (midiInputList.getSelectedItemIndex());
-    }
-    if (box == &midiOutputList) {
-        setMidiOutput (midiOutputList.getSelectedItemIndex());
-    }
+	// NEEDS TO BE IMPLEMENTED
 }
 
 
