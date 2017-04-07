@@ -23,6 +23,9 @@ MainContentComponent::MainContentComponent()
         }
     
     }
+        
+    //Set up custom look and feel
+    CustomLookAndFeel* customLook = new CustomLookAndFeel();
     
     // If no MIDI enabled - always true for alpha, might be useful for beta
     if (midiInputList.getSelectedId() == 0) {
@@ -36,6 +39,11 @@ MainContentComponent::MainContentComponent()
     // Set the UI Controls
     addAndMakeVisible (keyboardComponent);
     keyboardState.addListener (this);
+    
+    addAndMakeVisible (volumeSlider);
+    volumeSlider.setRange(0, 100);
+    volumeSlider.setSliderStyle(Slider::LinearVertical);
+    volumeSlider.addListener (this);
     
     addAndMakeVisible (notesBox);
     notesBox.setMultiLine (true);
@@ -144,6 +152,10 @@ MainContentComponent::MainContentComponent()
 	MemoryLabel.setText("Save & Load", dontSendNotification);
 	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
 	MemoryLabel.setFont(juce::Font(20, bold));
+        
+    addAndMakeVisible(volumeLabel);
+    volumeLabel.setText("Volume", dontSendNotification);
+    volumeLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
 
 	
     
@@ -223,6 +235,8 @@ void MainContentComponent::resized() {
     singleNoteButton.setBounds(195, 115, 150, 24);
     chordMajorButton.setBounds (195, 140, 150, 24);
     chordMinorButton.setBounds(195, 165, 150, 24);
+    
+    volumeSlider.setBounds(20, 275, 200, 20);
 	
 	feedbackLabel.setBounds(310, 245, 200, 20);
 	instrumentsLabel.setBounds(40, 90, 200, 20);
@@ -230,6 +244,7 @@ void MainContentComponent::resized() {
 	editingLabel.setBounds(605, 90, 200, 20);
 	melodyRhythm.setBounds(385, 90, 200, 20);
 	MemoryLabel.setBounds(640, 350, 200, 20);
+    volumeLabel.setBounds(40, 250, 200, 20);
 
 }
 
@@ -635,6 +650,10 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         piano = true;
         synthAudioSource.setUsingSampledSound();
     }
+}
+
+void MainContentComponent::sliderValueChanged(Slider *slider){
+    SystemAudioVolume::setGain(slider->getValue() / 100);
 }
 
 

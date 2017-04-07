@@ -3,6 +3,7 @@
 //  Piayes
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CustomLookAndFeel.h"
 #include "BinaryData.h"
 #include "Synth.h"
 #include <iostream>
@@ -34,6 +35,7 @@ class MainContentComponent  :   public Component,
                                 private ComboBox::Listener,
                                 private MidiInputCallback,
                                 private MidiKeyboardStateListener,
+                                private Slider::Listener,
                                 private Button::Listener {
 public:
     MainContentComponent();
@@ -49,6 +51,8 @@ private:
     int lastInputIndex;
     bool isAddingFromMidiInput;
     double startTime;
+                                    
+    CustomLookAndFeel customFeel;
     
     TextEditor notesBox;
     TextEditor rhythmBox;
@@ -89,6 +93,10 @@ private:
 	Label editingLabel;
 	Label MemoryLabel;
 	Label melodyRhythm;
+    Label volumeLabel;
+    
+    Slider volumeSlider;
+
                                     
     ComboBox midiInputList, midiOutputList;
     ScopedPointer<MidiOutput> currentMidiOutput;
@@ -142,6 +150,7 @@ private:
         
     static void runtimePermissionsCallback (bool wasGranted);
     
+    void sliderValueChanged(Slider* slider) override;
         
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent);
 };
