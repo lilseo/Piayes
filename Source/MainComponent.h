@@ -84,6 +84,9 @@ private:
     ToggleButton nativeButton;                                
     TextButton saveButton;
     TextButton loadButton;
+    
+                                    ShapeButton volumeUpButton;
+                                    ShapeButton volumeDownButton;
                                     
     void setButton(TextButton* button, String text);
 	

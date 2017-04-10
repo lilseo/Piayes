@@ -8,7 +8,9 @@ MainContentComponent::MainContentComponent()
     isAddingFromMidiInput (false),
     synthAudioSource (keyboardState),
     keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
-    startTime (Time::getMillisecondCounterHiRes() * 0.001) {
+    startTime (Time::getMillisecondCounterHiRes() * 0.001),
+    volumeUpButton ("Volume Up", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)),
+    volumeDownButton ("Volume Down", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)){
     
     // Set up MIDI input if keyboard is plugged in
     const StringArray midiInputs (MidiInput::getDevices());
@@ -40,6 +42,20 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (keyboardComponent);
     keyboardState.addListener (this);
     
+    //Volume Slider and +/- buttons
+    addAndMakeVisible(volumeUpButton);
+    volumeUpButton.addListener(this);
+    
+    addAndMakeVisible(volumeDownButton);
+    volumeDownButton.addListener(this);
+        
+    Path circle;
+    circle.addEllipse(0, 0, 30, 30);
+        
+    volumeUpButton.setShape(circle, false, false, false);
+    volumeDownButton.setShape(circle, false, false, false);
+        
+        
     addAndMakeVisible (volumeSlider);
     volumeSlider.setRange(0, 100);
     volumeSlider.setSliderStyle(Slider::LinearVertical);
@@ -156,6 +172,7 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible(volumeLabel);
     volumeLabel.setText("Volume", dontSendNotification);
     volumeLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+    volumeLabel.setFont(juce::Font(20, bold));
 
 	
     
@@ -236,7 +253,7 @@ void MainContentComponent::resized() {
     chordMajorButton.setBounds (195, 140, 150, 24);
     chordMinorButton.setBounds(195, 165, 150, 24);
     
-    volumeSlider.setBounds(20, 275, 200, 20);
+    volumeSlider.setBounds(80, 275, 20, 150);
 	
 	feedbackLabel.setBounds(310, 245, 200, 20);
 	instrumentsLabel.setBounds(40, 90, 200, 20);
@@ -245,6 +262,9 @@ void MainContentComponent::resized() {
 	melodyRhythm.setBounds(385, 90, 200, 20);
 	MemoryLabel.setBounds(640, 350, 200, 20);
     volumeLabel.setBounds(40, 250, 200, 20);
+    
+    volumeUpButton.setBounds(50, 315, 20, 20);
+    volumeDownButton.setBounds(50, 345, 20, 20);
 
 }
 
@@ -649,6 +669,15 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         bass = false;
         piano = true;
         synthAudioSource.setUsingSampledSound();
+    }
+    else if (buttonThatWasClicked == &volumeUpButton){
+        volumeSlider.setValue(volumeSlider.getValue() + 6.25); //6.25 comes from dividing 100 by 16 which is how many clicks it
+                                                               //takes to fully increase volume on a macbook
+        std::cout << "Volume Up clicked" << std::endl;
+    }
+    else if (buttonThatWasClicked == &volumeDownButton){
+        volumeSlider.setValue(volumeSlider.getValue() - 6.25);
+        std::cout << "Volume Down clicked" << std::endl;
     }
 }
 
