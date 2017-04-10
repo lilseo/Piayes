@@ -13,12 +13,7 @@
 
 
 static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
-// Data structure to hold relevant note data for final output buffer
-/*struct NoteData{
-    String note;
-    double timeStart;
-    double timeEnd;
-};*/
+
 
 // Global vectors to take hold buffer data
 std::vector<NoteData> bufferOut;
@@ -101,8 +96,6 @@ private:
     Slider volumeSlider;
 
                                     
-    ComboBox midiInputList, midiOutputList;
-    ScopedPointer<MidiOutput> currentMidiOutput;
     
     SynthAudioSource synthAudioSource;
     
@@ -120,9 +113,9 @@ private:
     };
     
     /** Starts listening to a MIDI input device, enabling it if necessary. */
-    void setMidiInput (int index);
+    //void setMidiInput (int index);
     
-    void setMidiOutput (int index);
+    //void setMidiOutput (int index);
 
     void comboBoxChanged (ComboBox* box) override;
                                     
