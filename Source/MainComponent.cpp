@@ -89,6 +89,9 @@ MainContentComponent::MainContentComponent()
     
     addAndMakeVisible (loadButton);
     setButton(&loadButton, "Load");
+        
+    addAndMakeVisible (tutorialButton);
+    setButton(&tutorialButton, "Tutorial");
 
 	//Font::bold
 
@@ -152,9 +155,6 @@ MainContentComponent::MainContentComponent()
 	
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
-	
-	
-		
 
     setSize (800, 600);
 }
@@ -197,6 +197,8 @@ void MainContentComponent::resized() {
 
     saveButton.setBounds (620, 375, 150, 24);
     loadButton.setBounds (620, 400, 150, 24);
+    
+    tutorialButton.setBounds(40, 551, 150, 24);
     
     singleNoteButton.setBounds(195, 115, 150, 24);
     chordMajorButton.setBounds (195, 140, 150, 24);
@@ -578,6 +580,12 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         bass = false;
         piano = true;
         synthAudioSource.setUsingSampledSound();
+    }
+    else if (buttonThatWasClicked == &tutorialButton) {
+        AlertWindow::showMessageBoxAsync (AlertWindow::InfoIcon,
+                                          "Tutorial",
+                                          "Thanks for using Piayes! We wish to make your piano-playing experience as enjoyable as possible. The general workflow is as follows:\n\t1. Select which instrument you want to use, and if you want to play a chord.\n\t2. Record a series of notes.\n\t3. Record the rhythm (you can use any key).\n\t4. Combine the notes and rhythms.\n\t5. Save the recording you just made.",
+                                          "OK");
     }
 }
 

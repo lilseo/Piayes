@@ -76,6 +76,8 @@ private:
     TextButton saveButton;
     TextButton loadButton;
                                     
+    TextButton tutorialButton;
+                                    
     void setButton(TextButton* button, String text);
 	
 	Label feedbackLabel;
