@@ -12,7 +12,6 @@ MainContentComponent::MainContentComponent()
     volumeUpButton ("Volume Up", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)),
     volumeDownButton ("Volume Down", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)){
     
-<<<<<<< HEAD
     // Set up MIDI input if keyboard is plugged in
     const StringArray midiInputs (MidiInput::getDevices());
     midiInputList.addItemList (midiInputs, 1);
@@ -38,9 +37,6 @@ MainContentComponent::MainContentComponent()
     // MIDI Outputs - not working yet
     midiOutputList.addItemList (MidiOutput::getDevices(), 1);
     midiOutputList.addListener (this);
-=======
-		
->>>>>>> 4b2df533d35e10382cbfd74b8b3d15dcd437fb22
     
     // Set the UI Controls
     addAndMakeVisible (keyboardComponent);
@@ -204,6 +200,7 @@ MainContentComponent::MainContentComponent()
     chordMinorButton.addListener(this);
 	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
 	
+    
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 	
@@ -283,12 +280,46 @@ AudioDeviceManager& MainContentComponent::getSharedAudioDeviceManager() {
 }
 
 
+/** Starts listening to a MIDI input device, enabling it if necessary. */
+void MainContentComponent::setMidiInput (int index) {
+    const StringArray list (MidiInput::getDevices()); // list will contain only the MIDI keyboard, if connected
+    
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], this);
+    
+    const String newInput(list[index]); // newInput is either the MIDI keyboard or null if we're just using the UI
+    
+    if (! deviceManager.isMidiInputEnabled(newInput)) { // always the case for alpha
+        deviceManager.setMidiInputEnabled (newInput, true);
+    }
+    
+    // MididInputCallback receives messages from a physical MIDI input device
+    deviceManager.addMidiInputCallback (newInput, this);
+    midiInputList.setSelectedId (index + 1, dontSendNotification);
+    
+    lastInputIndex = index;
+}
+
+
+// Not working yet - beta material
+void MainContentComponent::setMidiOutput (int index) {
+    currentMidiOutput = nullptr;
+    
+    if (MidiOutput::getDevices() [index].isNotEmpty()) {
+        currentMidiOutput = MidiOutput::openDevice (index);
+        jassert (currentMidiOutput);
+    }
+}
 
 
 // need to implement this for application to run
 void MainContentComponent::comboBoxChanged (ComboBox* box)
 {
-	// NEEDS TO BE IMPLEMENTED
+    if (box == &midiInputList) {
+        setMidiInput  (midiInputList.getSelectedItemIndex());
+    }
+    if (box == &midiOutputList) {
+        setMidiOutput (midiOutputList.getSelectedItemIndex());
+    }
 }
 
 
