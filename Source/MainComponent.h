@@ -3,6 +3,7 @@
 //  Piayes
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CustomLookAndFeel.h"
 #include "BinaryData.h"
 #include "Synth.h"
 #include <iostream>
@@ -12,7 +13,12 @@
 
 
 static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
-
+// Data structure to hold relevant note data for final output buffer
+/*struct NoteData{
+    String note;
+    double timeStart;
+    double timeEnd;
+};*/
 
 // Global vectors to take hold buffer data
 std::vector<NoteData> bufferOut;
@@ -29,6 +35,7 @@ class MainContentComponent  :   public Component,
                                 private ComboBox::Listener,
                                 private MidiInputCallback,
                                 private MidiKeyboardStateListener,
+                                private Slider::Listener,
                                 private Button::Listener {
 public:
     MainContentComponent();
@@ -44,6 +51,8 @@ private:
     int lastInputIndex;
     bool isAddingFromMidiInput;
     double startTime;
+                                    
+    CustomLookAndFeel customFeel;
     
     TextEditor notesBox;
     TextEditor rhythmBox;
@@ -75,6 +84,9 @@ private:
     ToggleButton nativeButton;                                
     TextButton saveButton;
     TextButton loadButton;
+    
+                                    ShapeButton volumeUpButton;
+                                    ShapeButton volumeDownButton;
                                     
     TextButton tutorialButton;
                                     
@@ -86,7 +98,13 @@ private:
 	Label editingLabel;
 	Label MemoryLabel;
 	Label melodyRhythm;
+    Label volumeLabel;
+    
+    Slider volumeSlider;
+
                                     
+    ComboBox midiInputList, midiOutputList;
+    ScopedPointer<MidiOutput> currentMidiOutput;
     
     SynthAudioSource synthAudioSource;
     
@@ -104,9 +122,9 @@ private:
     };
     
     /** Starts listening to a MIDI input device, enabling it if necessary. */
-    //void setMidiInput (int index);
+    void setMidiInput (int index);
     
-    //void setMidiOutput (int index);
+    void setMidiOutput (int index);
 
     void comboBoxChanged (ComboBox* box) override;
                                     
@@ -137,6 +155,7 @@ private:
         
     static void runtimePermissionsCallback (bool wasGranted);
     
+    void sliderValueChanged(Slider* slider) override;
         
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent);
 };

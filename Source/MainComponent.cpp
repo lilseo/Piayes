@@ -8,13 +8,58 @@ MainContentComponent::MainContentComponent()
     isAddingFromMidiInput (false),
     synthAudioSource (keyboardState),
     keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard),
-    startTime (Time::getMillisecondCounterHiRes() * 0.001) {
+    startTime (Time::getMillisecondCounterHiRes() * 0.001),
+    volumeUpButton ("Volume Up", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)),
+    volumeDownButton ("Volume Down", juce::Colour(250, 250, 250), juce::Colour(211, 211, 211), juce::Colour(128, 128, 128)){
     
-		
+    // Set up MIDI input if keyboard is plugged in
+    const StringArray midiInputs (MidiInput::getDevices());
+    midiInputList.addItemList (midiInputs, 1);
+    midiInputList.addListener (this);
+    
+    // Checks if there are any enabled devices - never true for alpha, might be useful for beta
+    for (int i = 0; i < midiInputs.size(); ++i) {
+        if (deviceManager.isMidiInputEnabled(midiInputs[i])) {
+            setMidiInput (i);
+            break;
+        }
+    
+    }
+        
+    //Set up custom look and feel
+    CustomLookAndFeel* customLook = new CustomLookAndFeel();
+    
+    // If no MIDI enabled - always true for alpha, might be useful for beta
+    if (midiInputList.getSelectedId() == 0) {
+        setMidiInput (0); // called with or without MIDI keyboard
+    }
+    
+    // MIDI Outputs - not working yet
+    midiOutputList.addItemList (MidiOutput::getDevices(), 1);
+    midiOutputList.addListener (this);
     
     // Set the UI Controls
     addAndMakeVisible (keyboardComponent);
     keyboardState.addListener (this);
+    
+    //Volume Slider and +/- buttons
+    addAndMakeVisible(volumeUpButton);
+    volumeUpButton.addListener(this);
+    
+    addAndMakeVisible(volumeDownButton);
+    volumeDownButton.addListener(this);
+        
+    Path circle;
+    circle.addEllipse(0, 0, 30, 30);
+        
+    volumeUpButton.setShape(circle, false, false, false);
+    volumeDownButton.setShape(circle, false, false, false);
+        
+        
+    addAndMakeVisible (volumeSlider);
+    volumeSlider.setRange(0, 100);
+    volumeSlider.setSliderStyle(Slider::LinearVertical);
+    volumeSlider.addListener (this);
     
     addAndMakeVisible (notesBox);
     notesBox.setMultiLine (true);
@@ -126,6 +171,11 @@ MainContentComponent::MainContentComponent()
 	MemoryLabel.setText("Save & Load", dontSendNotification);
 	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
 	MemoryLabel.setFont(juce::Font(20, bold));
+        
+    addAndMakeVisible(volumeLabel);
+    volumeLabel.setText("Volume", dontSendNotification);
+    volumeLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+    volumeLabel.setFont(juce::Font(20, bold));
 
 	
     
@@ -153,6 +203,7 @@ MainContentComponent::MainContentComponent()
     chordMinorButton.addListener(this);
 	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
 	
+    
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
 
@@ -203,6 +254,8 @@ void MainContentComponent::resized() {
     singleNoteButton.setBounds(195, 115, 150, 24);
     chordMajorButton.setBounds (195, 140, 150, 24);
     chordMinorButton.setBounds(195, 165, 150, 24);
+    
+    volumeSlider.setBounds(80, 275, 20, 150);
 	
 	feedbackLabel.setBounds(310, 245, 200, 20);
 	instrumentsLabel.setBounds(40, 90, 200, 20);
@@ -210,6 +263,10 @@ void MainContentComponent::resized() {
 	editingLabel.setBounds(605, 90, 200, 20);
 	melodyRhythm.setBounds(385, 90, 200, 20);
 	MemoryLabel.setBounds(640, 350, 200, 20);
+    volumeLabel.setBounds(40, 250, 200, 20);
+    
+    volumeUpButton.setBounds(50, 315, 20, 20);
+    volumeDownButton.setBounds(50, 345, 20, 20);
 
 }
 
@@ -225,12 +282,46 @@ AudioDeviceManager& MainContentComponent::getSharedAudioDeviceManager() {
 }
 
 
+/** Starts listening to a MIDI input device, enabling it if necessary. */
+void MainContentComponent::setMidiInput (int index) {
+    const StringArray list (MidiInput::getDevices()); // list will contain only the MIDI keyboard, if connected
+    
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], this);
+    
+    const String newInput(list[index]); // newInput is either the MIDI keyboard or null if we're just using the UI
+    
+    if (! deviceManager.isMidiInputEnabled(newInput)) { // always the case for alpha
+        deviceManager.setMidiInputEnabled (newInput, true);
+    }
+    
+    // MididInputCallback receives messages from a physical MIDI input device
+    deviceManager.addMidiInputCallback (newInput, this);
+    midiInputList.setSelectedId (index + 1, dontSendNotification);
+    
+    lastInputIndex = index;
+}
+
+
+// Not working yet - beta material
+void MainContentComponent::setMidiOutput (int index) {
+    currentMidiOutput = nullptr;
+    
+    if (MidiOutput::getDevices() [index].isNotEmpty()) {
+        currentMidiOutput = MidiOutput::openDevice (index);
+        jassert (currentMidiOutput);
+    }
+}
 
 
 // need to implement this for application to run
 void MainContentComponent::comboBoxChanged (ComboBox* box)
 {
-	// NEEDS TO BE IMPLEMENTED
+    if (box == &midiInputList) {
+        setMidiInput  (midiInputList.getSelectedItemIndex());
+    }
+    if (box == &midiOutputList) {
+        setMidiOutput (midiOutputList.getSelectedItemIndex());
+    }
 }
 
 
@@ -587,6 +678,19 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
                                           "Thanks for using Piayes! We wish to make your piano-playing experience as enjoyable as possible. The general workflow is as follows:\n\t1. Select which instrument you want to use, and if you want to play a chord.\n\t2. Record a series of notes.\n\t3. Record the rhythm (you can use any key).\n\t4. Combine the notes and rhythms.\n\t5. Save the recording you just made.",
                                           "OK");
     }
+    else if (buttonThatWasClicked == &volumeUpButton){
+        volumeSlider.setValue(volumeSlider.getValue() + 6.25); //6.25 comes from dividing 100 by 16 which is how many clicks it
+                                                               //takes to fully increase volume on a macbook
+        std::cout << "Volume Up clicked" << std::endl;
+    }
+    else if (buttonThatWasClicked == &volumeDownButton){
+        volumeSlider.setValue(volumeSlider.getValue() - 6.25);
+        std::cout << "Volume Down clicked" << std::endl;
+    }
+}
+
+void MainContentComponent::sliderValueChanged(Slider *slider){
+    SystemAudioVolume::setGain(slider->getValue() / 100);
 }
 
 
