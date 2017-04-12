@@ -27,7 +27,7 @@ MainContentComponent::MainContentComponent()
     }
         
     //Set up custom look and feel
-    CustomLookAndFeel* customLook = new CustomLookAndFeel();
+    //CustomLookAndFeel* customLook = new CustomLookAndFeel();
     
     // If no MIDI enabled - always true for alpha, might be useful for beta
     if (midiInputList.getSelectedId() == 0) {
@@ -169,10 +169,22 @@ MainContentComponent::MainContentComponent()
 	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
 	MemoryLabel.setFont(juce::Font(20, bold));
         
-    addAndMakeVisible(volumeLabel);
-    volumeLabel.setText("Volume", dontSendNotification);
-    volumeLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-    volumeLabel.setFont(juce::Font(20, bold));
+    addAndMakeVisible(volumeSliderLabel);
+    volumeSliderLabel.setText("Volume", dontSendNotification);
+    volumeSliderLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+    volumeSliderLabel.setFont(juce::Font(20, bold));
+    
+    addAndMakeVisible(volumeUpLabel);
+    volumeUpLabel.setText("Volume Up", dontSendNotification);
+    volumeUpLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+    volumeUpLabel.setFont(juce::Font(14, bold));
+    
+    addAndMakeVisible(volumeDownLabel);
+    volumeDownLabel.setText("Volume Down", dontSendNotification);
+    volumeDownLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
+    volumeDownLabel.setFont(juce::Font(14, bold));
+    
+        
 
 	
     
@@ -253,7 +265,7 @@ void MainContentComponent::resized() {
     chordMajorButton.setBounds (195, 140, 150, 24);
     chordMinorButton.setBounds(195, 165, 150, 24);
     
-    volumeSlider.setBounds(80, 275, 20, 150);
+    volumeSlider.setBounds(100, 275, 20, 150);
 	
 	feedbackLabel.setBounds(310, 245, 200, 20);
 	instrumentsLabel.setBounds(40, 90, 200, 20);
@@ -261,10 +273,12 @@ void MainContentComponent::resized() {
 	editingLabel.setBounds(605, 90, 200, 20);
 	melodyRhythm.setBounds(385, 90, 200, 20);
 	MemoryLabel.setBounds(640, 350, 200, 20);
-    volumeLabel.setBounds(40, 250, 200, 20);
+    volumeSliderLabel.setBounds(40, 250, 200, 20);
+    volumeUpLabel.setBounds(20, 280, 75, 20);
+    volumeDownLabel.setBounds(15, 340, 85, 30);
     
-    volumeUpButton.setBounds(50, 315, 20, 20);
-    volumeDownButton.setBounds(50, 345, 20, 20);
+    volumeUpButton.setBounds(45, 310, 20, 20);
+    volumeDownButton.setBounds(45, 375, 20, 20);
 
 }
 
@@ -671,17 +685,41 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         synthAudioSource.setUsingSampledSound();
     }
     else if (buttonThatWasClicked == &volumeUpButton){
+        if(SystemAudioVolume::isMuted()){
+            if(SystemAudioVolume::setMuted(false)){
+                std::cout << "Passed" << std::endl;
+            }
+            else{
+                std::cout << "Enter failure" << std::endl;
+            }
+        }
         volumeSlider.setValue(volumeSlider.getValue() + 6.25); //6.25 comes from dividing 100 by 16 which is how many clicks it
-                                                               //takes to fully increase volume on a macbook
-        std::cout << "Volume Up clicked" << std::endl;
+                                                               //takes to fully increase volume on a macbook. Can be easily altered for Brad's needs
+        //std::cout << "Volume Up clicked" << std::endl;
     }
     else if (buttonThatWasClicked == &volumeDownButton){
+        if(SystemAudioVolume::isMuted()){
+            if(SystemAudioVolume::setMuted(false)){
+                std::cout << "Passed" << std::endl;
+            }
+            else{
+                std::cout << "Enter failure" << std::endl;
+            }
+        }
         volumeSlider.setValue(volumeSlider.getValue() - 6.25);
-        std::cout << "Volume Down clicked" << std::endl;
+        //std::cout << "Volume Down clicked" << std::endl;
     }
 }
 
 void MainContentComponent::sliderValueChanged(Slider *slider){
+    if(SystemAudioVolume::isMuted()){
+        if(SystemAudioVolume::setMuted(false)){
+            std::cout << "Passed" << std::endl;
+        }
+        else{
+            std::cout << "Enter failure" << std::endl;
+        }
+    }
     SystemAudioVolume::setGain(slider->getValue() / 100);
 }
 
