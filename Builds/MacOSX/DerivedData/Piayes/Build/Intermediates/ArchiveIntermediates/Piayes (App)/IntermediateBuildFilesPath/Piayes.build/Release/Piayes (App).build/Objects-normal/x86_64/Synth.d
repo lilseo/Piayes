@@ -1,7 +1,7 @@
 dependencies: \
-  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Builds/MacOSX/Synth.cpp \
-  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Builds/MacOSX/Synth.h \
-  ../../JuceLibraryCode/../JuceLibraryCode/JuceHeader.h \
+  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/Synth.cpp \
+  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/Synth.h \
+  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/../JuceLibraryCode/JuceHeader.h \
   ../../JuceLibraryCode/AppConfig.h \
   ../../../../../JUCE/modules/juce_audio_basics/juce_audio_basics.h \
   ../../../../../JUCE/modules/juce_core/juce_core.h \
@@ -467,4 +467,5 @@ dependencies: \
   ../../../../../JUCE/modules/juce_video/juce_video.h \
   ../../../../../JUCE/modules/juce_video/playback/juce_DirectShowComponent.h \
   ../../../../../JUCE/modules/juce_video/playback/juce_QuickTimeMovieComponent.h \
-  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h
+  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h \
+  ../../JuceLibraryCode/BinaryData.h

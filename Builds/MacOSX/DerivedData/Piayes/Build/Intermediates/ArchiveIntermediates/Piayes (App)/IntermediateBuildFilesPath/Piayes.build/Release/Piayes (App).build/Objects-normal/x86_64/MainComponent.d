@@ -468,6 +468,6 @@ dependencies: \
   ../../../../../JUCE/modules/juce_video/playback/juce_DirectShowComponent.h \
   ../../../../../JUCE/modules/juce_video/playback/juce_QuickTimeMovieComponent.h \
   ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h \
+  ../../JuceLibraryCode/BinaryData.h \
   /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/CustomLookAndFeel.h \
-  /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/BinaryData.h \
   /Users/DanV/Documents/EECS_481/project_repo/Piayes/Source/Synth.h

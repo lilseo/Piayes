@@ -5,8 +5,11 @@
               jucerVersion="4.3.1">
   <MAINGROUP id="kPZeX6" name="Piayes">
     <GROUP id="{D4D25198-B916-5C78-90A4-CAFD0B682219}" name="Source">
-      <FILE id="OG9y3T" name="BinaryData.cpp" compile="1" resource="0" file="Source/BinaryData.cpp"/>
-      <FILE id="FvNO50" name="BinaryData.h" compile="0" resource="0" file="Source/BinaryData.h"/>
+      <FILE id="hf6DEj" name="Synth.cpp" compile="1" resource="0" file="Source/Synth.cpp"/>
+      <FILE id="mDBcTM" name="Synth.h" compile="0" resource="0" file="Source/Synth.h"/>
+      <FILE id="OwPF8B" name="bass.wav" compile="0" resource="1" file="bass.wav"/>
+      <FILE id="setu0v" name="Electro-Tom.wav" compile="0" resource="1" file="Electro-Tom.wav"/>
+      <FILE id="vhY9WE" name="piano.wav" compile="0" resource="1" file="piano.wav"/>
       <FILE id="tf7ZdH" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="ZxOF1u" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>

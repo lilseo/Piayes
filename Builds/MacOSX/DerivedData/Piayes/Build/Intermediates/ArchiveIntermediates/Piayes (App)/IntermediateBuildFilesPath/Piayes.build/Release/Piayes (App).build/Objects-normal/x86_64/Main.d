@@ -466,4 +466,5 @@ dependencies: \
   ../../../../../JUCE/modules/juce_video/juce_video.h \
   ../../../../../JUCE/modules/juce_video/playback/juce_DirectShowComponent.h \
   ../../../../../JUCE/modules/juce_video/playback/juce_QuickTimeMovieComponent.h \
-  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h
+  ../../../../../JUCE/modules/juce_video/capture/juce_CameraDevice.h \
+  ../../JuceLibraryCode/BinaryData.h

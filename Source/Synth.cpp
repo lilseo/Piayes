@@ -1,4 +1,5 @@
 #include "Synth.h"
+#include "CoreFoundation/CoreFoundation.h"
 
 
 SineWaveSound::SineWaveSound() {}
@@ -114,8 +115,31 @@ void SynthAudioSource::setUsingSineWaveSound() {
 void SynthAudioSource::setUsingSampledSound() {
     WavAudioFormat wavFormat;
     
+    //Gets working directory in order for Archived file to find the path of the
+    //.wav files
+    
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+    {
+        // error!
+    }
+    CFRelease(resourcesURL);
+    
+    chdir(path);
+    //std::cout << "Current Path: " << path << std::endl;
+    
+    std::string pathName = path;
+    
+    
     if (drum == true) {
-        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../Electro-Tom.wav"));
+//        std::cout << File::getCurrentWorkingDirectory().getFileName() << std::endl;
+//        
+//        char wd[1024];
+//        std::cout << getcwd(wd, sizeof(wd)) << std::endl;
+
+        FileInputStream* sound = new FileInputStream (File(pathName + "/Electro-Tom.wav"));
         
         if (sound->openedOk()) {
             ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
@@ -135,7 +159,7 @@ void SynthAudioSource::setUsingSampledSound() {
         }
     }
     else if (bass == true) {
-        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../bass.wav"));
+        FileInputStream* sound = new FileInputStream (File(pathName + "/bass.wav"));
         
         if (sound->openedOk()) {
             ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
@@ -155,7 +179,7 @@ void SynthAudioSource::setUsingSampledSound() {
         }
     }
     else if (piano == true) {
-        FileInputStream* sound = new FileInputStream (File::getCurrentWorkingDirectory().getChildFile("../../../../piano.wav"));
+        FileInputStream* sound = new FileInputStream (File(pathName + "/piano.wav"));
         
         if (sound->openedOk()) {
             ScopedPointer<AudioFormatReader> audioReader (wavFormat.createReaderFor (sound,true));
