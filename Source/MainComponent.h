@@ -85,8 +85,8 @@ private:
     TextButton saveButton;
     TextButton loadButton;
     
-                                    ShapeButton volumeUpButton;
-                                    ShapeButton volumeDownButton;
+    ShapeButton volumeUpButton;
+    ShapeButton volumeDownButton;
                                     
     TextButton tutorialButton;
                                     
@@ -98,7 +98,9 @@ private:
 	Label editingLabel;
 	Label MemoryLabel;
 	Label melodyRhythm;
-    Label volumeLabel;
+    Label volumeSliderLabel;
+    Label volumeUpLabel;
+    Label volumeDownLabel;
     
     Slider volumeSlider;
 
