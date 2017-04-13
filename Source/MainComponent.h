@@ -24,6 +24,9 @@ static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
 std::vector<NoteData> bufferOut;
 std::vector<NoteData> bufferNotes;
 std::vector<double> bufferTimes;
+MidiBuffer outputBuffer; 
+MidiMessage newNote;
+bool edit = false;
 bool drum = false;
 bool bass = false;
 bool piano = false;
@@ -65,6 +68,7 @@ private:
     TextButton stopRecordButton;
     TextButton playNotesButton;
     TextButton combineButton;
+                                    TextButton editNote;
     TextButton clearButton;
     ToggleButton notesButton;
     ToggleButton rhythmButton;
@@ -149,7 +153,7 @@ private:
     
     void playNotes (std::vector<MidiMessage> temp);
     
-    std::vector<NoteData> combineData(std::vector<NoteData> notes, std::vector<double> times);
+    void combineData(std::vector<NoteData> notes, std::vector<double> times);
     
     int convertNameToMidi (String noteString);
     
