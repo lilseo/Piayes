@@ -564,7 +564,11 @@ void MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<
         MidiMessage newMidiMessage = MidiMessage::noteOn(1, 0, (uint8)100);
         newMidiMessage.setNoteNumber(newNote.note_integer);
         newMidiMessage.setTimeStamp(newNote.timeStart); // only timeStart for now
-        
+		
+		//
+		synthAudioSource.midiCollector.addMessageToQueue(newMidiMessage);
+		
+		
         outputBuffer.addEvent(newMidiMessage, i);
         
 //        std::cout << "new midi message: " << newMidiMessage.getNoteNumber();
