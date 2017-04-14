@@ -312,7 +312,7 @@ void MainContentComponent::setMidiInput (int index) {
     }
     
     // MididInputCallback receives messages from a physical MIDI input device
-    deviceManager.addMidiInputCallback (newInput, &(synthAudioSource.midiCollector));
+    deviceManager.addMidiInputCallback (newInput, this);
     midiInputList.setSelectedId (index + 1, dontSendNotification);
     
     lastInputIndex = index;
@@ -366,24 +366,51 @@ void MainContentComponent::logFeedback (const String& m) {
 void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) {
     const ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
     keyboardState.processNextMidiEvent (message);
-    if(message.getControllerNumber() == 1){
-        volumeSlider.setValue(message.getControllerValue());
+    if(message.isController()){
+        std::cout << "Controller number: ";
+        std::cout << message.getControllerNumber() << std::endl;
+        std::cout << "Controller value: ";
+        std::cout << message.getControllerValue() << std::endl;
+        if(message.getControllerNumber() == 1){
+            volumeSlider.setValue(message.getControllerValue());
+        }
+        else if(message.getControllerNumber() == 49){
+            buttonClicked(&recordButton);
+        }
+        else if(message.getControllerNumber() == 50){
+            buttonClicked(&stopRecordButton);
+            stopRecordingFromController = true; //Pressing this button adds a D2 to end of recording need to drop it off
+        }
+        else if(message.getControllerNumber() == 51){
+            buttonClicked(&clearButton);
+        }   
     }
-    else if(message.getControllerNumber() == 49){
-        buttonClicked(&recordButton);
+    if(chordValue){
+        if (chordValue == 1) {
+            // value 1 is major chords
+            MidiMessage m3(message);
+            m3.setNoteNumber((int) message.getNoteNumber() + 4); // the major third
+            MidiMessage m5(message);
+            m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+            synthAudioSource.midiCollector.addMessageToQueue(message);
+            synthAudioSource.midiCollector.addMessageToQueue(m3);
+            synthAudioSource.midiCollector.addMessageToQueue(m5);
+            
+        }
+        else if (chordValue == 2) {
+            // value 2 is minor chord
+            MidiMessage m3(message);
+            m3.setNoteNumber((int) message.getNoteNumber() + 3); // the minor third
+            MidiMessage m5(message);
+            m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+            synthAudioSource.midiCollector.addMessageToQueue(message);
+            synthAudioSource.midiCollector.addMessageToQueue(m3);
+            synthAudioSource.midiCollector.addMessageToQueue(m5);
+        }
     }
-    else if(message.getControllerNumber() == 50){
-        buttonClicked(&stopRecordButton);
-        stopRecordingFromController = true; //Pressing this button adds a D2 to end of recording need to drop it off
+    else{
+     synthAudioSource.midiCollector.addMessageToQueue(message);
     }
-    else if(message.getControllerNumber() == 51){
-        buttonClicked(&clearButton);
-    }
-    
-    std::cout << "Controller number: ";
-    std::cout << message.getControllerNumber() << std::endl;
-    std::cout << "Controller value: ";
-    std::cout << message.getControllerValue() << std::endl;
 }
 
 
