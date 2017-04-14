@@ -1,5 +1,6 @@
 #include "Synth.h"
 #include "CoreFoundation/CoreFoundation.h"
+#include <iostream>
 
 
 SineWaveSound::SineWaveSound() {}
@@ -156,6 +157,9 @@ void SynthAudioSource::setUsingSampledSound() {
                                               0.1,  // release time
                                               10.0  // maximum sample length
                                               ));
+        }
+        else{
+            std::cout << "open failure" << std::endl;
         }
     }
     else if (bass == true) {

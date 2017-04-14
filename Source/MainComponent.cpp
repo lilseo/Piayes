@@ -55,9 +55,8 @@ MainContentComponent::MainContentComponent()
     volumeUpButton.setShape(circle, false, false, false);
     volumeDownButton.setShape(circle, false, false, false);
         
-        
     addAndMakeVisible (volumeSlider);
-    volumeSlider.setRange(0, 100);
+    volumeSlider.setRange(0, 127);
     volumeSlider.setSliderStyle(Slider::LinearVertical);
     volumeSlider.addListener (this);
     
@@ -309,7 +308,7 @@ void MainContentComponent::setMidiInput (int index) {
     }
     
     // MididInputCallback receives messages from a physical MIDI input device
-    deviceManager.addMidiInputCallback (newInput, this);
+    deviceManager.addMidiInputCallback (newInput, &(synthAudioSource.midiCollector));
     midiInputList.setSelectedId (index + 1, dontSendNotification);
     
     lastInputIndex = index;
@@ -362,6 +361,24 @@ void MainContentComponent::logFeedback (const String& m) {
 void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) {
     const ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
     keyboardState.processNextMidiEvent (message);
+    if(message.getControllerNumber() == 1){
+        volumeSlider.setValue(message.getControllerValue());
+    }
+    else if(message.getControllerNumber() == 49){
+        buttonClicked(&recordButton);
+    }
+    else if(message.getControllerNumber() == 50){
+        buttonClicked(&stopRecordButton);
+        stopRecordingFromController = true; //Pressing this button adds a D2 to end of recording need to drop it off
+    }
+    else if(message.getControllerNumber() == 51){
+        buttonClicked(&clearButton);
+    }
+    
+    std::cout << "Controller number: ";
+    std::cout << message.getControllerNumber() << std::endl;
+    std::cout << "Controller value: ";
+    std::cout << message.getControllerValue() << std::endl;
 }
 
 

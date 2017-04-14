@@ -27,6 +27,7 @@ std::vector<double> bufferTimes;
 bool drum = false;
 bool bass = false;
 bool piano = false;
+bool stopRecordingFromController = false;
 
 int chordValue = 0;
 bool is_combine_button = false;
