@@ -62,12 +62,12 @@ MainContentComponent::MainContentComponent()
     
     addAndMakeVisible (notesBox);
     notesBox.setMultiLine (true);
-    notesBox.setReadOnly(true);
+    notesBox.setReadOnly(false);
     logNoteMessage("Notes: ");
     
     addAndMakeVisible (rhythmBox);
     rhythmBox.setMultiLine (true);
-    rhythmBox.setReadOnly(true);
+    rhythmBox.setReadOnly(false);
     logRhythmMessage("Times: ");
     
     addAndMakeVisible (feedbackBox);
@@ -85,6 +85,9 @@ MainContentComponent::MainContentComponent()
     
     addAndMakeVisible (combineButton);
     setButton(&combineButton, "Combine Tracks");
+        
+        addAndMakeVisible(editNote);
+        setButton(&editNote, "Edit Note");
     
     addAndMakeVisible (clearButton);
     setButton(&clearButton, "Clear Recording");
@@ -244,10 +247,11 @@ void MainContentComponent::resized() {
     feedbackBox.setBounds(240, 525, 320, 50);
     
     recordButton.setBounds (620, 115, 150, 24);
-    stopRecordButton.setBounds (620, 140, 150, 24);
-    playNotesButton.setBounds (620, 165, 150, 24);
-    combineButton.setBounds (620, 190, 150, 24);
-    clearButton.setBounds (620, 215, 150, 24);
+    stopRecordButton.setBounds (620, 145, 150, 24);
+    playNotesButton.setBounds (620, 175, 150, 24);
+    combineButton.setBounds (620, 205, 150, 24);
+    editNote.setBounds(620, 235, 150, 24);
+    clearButton.setBounds (620, 265, 150, 24);
     
     notesButton.setBounds (420, 115, 150, 24);
     rhythmButton.setBounds (420, 140, 150, 24);
@@ -258,7 +262,7 @@ void MainContentComponent::resized() {
     pianoButton.setBounds (50, 190, 150, 24);
 
     saveButton.setBounds (620, 375, 150, 24);
-    loadButton.setBounds (620, 400, 150, 24);
+    loadButton.setBounds (620, 405, 150, 24);
     
     tutorialButton.setBounds(40, 551, 150, 24);
     
@@ -317,12 +321,13 @@ void MainContentComponent::setMidiInput (int index) {
 
 // Not working yet - beta material
 void MainContentComponent::setMidiOutput (int index) {
-    currentMidiOutput = nullptr;
-    
-    if (MidiOutput::getDevices() [index].isNotEmpty()) {
-        currentMidiOutput = MidiOutput::openDevice (index);
-        jassert (currentMidiOutput);
-    }
+    //MidiOutput midiOutput;
+    auto midiOutput = MidiOutput::openDevice(0);
+    //    currentMidiOutput = nullptr;
+    //    if (MidiOutput::getDevices() [index].isNotEmpty()) {
+    //        currentMidiOutput = MidiOutput::openDevice (index);
+    //        jassert (currentMidiOutput);
+    //    }
 }
 
 
@@ -385,17 +390,42 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
 void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) {
     MidiMessage m (MidiMessage::noteOn (midiChannel, midiNoteNumber, velocity));
     m.setTimeStamp (Time::getMillisecondCounterHiRes() * 0.001);
+    // Edit note (value) functionality
+    // Note: this does not allow the editing of times
+    if (edit){
+        newNote = m;
+        
+        String boxText = notesBox.getText();
+        // Notes: \n == 8 chars, then C1\n etc.
+        
+        String newNoteName = MidiMessage::getMidiNoteName (newNote.getNoteNumber(), true, true, 3);
+        Range <int> highlighted = notesBox.getHighlightedRegion(); // this is fucked up
+        highlighted.setEnd(highlighted.getStart() + 2); // FIXME: what if sharp? can't hard-code
+        std::cout << notesBox.getText() << std::endl;
+        int numChars = highlighted.getEnd() - highlighted.getStart();
+        
+        String boxTextNew = boxText.replaceSection(highlighted.getStart(), numChars, newNoteName);
+        notesBox.setText(boxTextNew);
+        std::cout << notesBox.getText() << std::endl;
+        edit = false;
+        
+        // change value in vector
+        // FIXME: need to hit "Combine Tracks" again to get change in output buffer
+        double noteIdx = ceil((highlighted.getStart() - 7) / 3);
+        notes[noteIdx].note = newNoteName;
+        notes[noteIdx].note_integer = newNote.getNoteNumber();
+        return;
+    }
     
     if (record and setNotes) {
         temp.push_back(m);
-
-		NoteData temp;
-		temp.note = MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
-		temp.note_integer = m.getNoteNumber();
-		temp.timeEnd = 0;
-		temp.timeStart = 0;
-		notes.push_back(temp);
-		//notes.push_back(MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3));
+        
+        NoteData temp;
+        temp.note = MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+        temp.note_integer = m.getNoteNumber();
+        temp.timeEnd = 0;
+        temp.timeStart = 0;
+        notes.push_back(temp);
         bufferNotes = notes;
         
         const MessageManagerLock mmLock;
@@ -419,9 +449,11 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         
         const MessageManagerLock mmLock;
         rhythmBox.clear();
-        logRhythmMessage("Times: ");
-        for (double n : bufferTimes)
-            logRhythmMessage(String(n));
+        logRhythmMessage(String("Times: "));
+        for (double n : bufferTimes){
+            String t = String(n).substring(0, 3); // FIXME: NOT WORKING
+            logRhythmMessage(t);
+        }
     }
 }
 
@@ -472,20 +504,22 @@ void MainContentComponent::playNotes (std::vector<MidiMessage> temp) {
 }
 
 
-std::vector<NoteData> MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times) {
+void MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times) {
+    
     std::vector<NoteData> bufferOut;
     
     if (notes.empty() || times.empty()) {
         logFeedback("Record (1) Notes and (2) Tempo before combining tracks.");
-        return bufferOut; // Will be empty... TODO: handle this a better way
+        outputBuffer.clear();
+        return;
     }
-
+    
     NoteData newNote;
     double timeZero = times[0]; // timeStart of first note, subtracted from all subsequent times
     
     for (int i = 0; i < notes.size(); ++i) {
         newNote.note = notes[i].note;
-		newNote.note_integer = notes[i].note_integer;
+        newNote.note_integer = notes[i].note_integer;
         
         if (i < (times.size() / 2)) {
             newNote.timeStart = times[i * 2] - timeZero;
@@ -500,9 +534,40 @@ std::vector<NoteData> MainContentComponent::combineData(std::vector<NoteData> no
         }
         
         bufferOut.push_back(newNote);
+        MidiMessage newMidiMessage = MidiMessage::noteOn(1, 0, (uint8)100);
+        newMidiMessage.setNoteNumber(newNote.note_integer);
+        newMidiMessage.setTimeStamp(newNote.timeStart); // only timeStart for now
+        
+        outputBuffer.addEvent(newMidiMessage, i);
+        
+//        std::cout << "new midi message: " << newMidiMessage.getNoteNumber();
+//        std::cout << " " << newMidiMessage.getTimeStamp() << std::endl;
+        
     } // for (all notes recorded)
     
-    return bufferOut;
+    std::cout << "output buffer num events: " << outputBuffer.getNumEvents() << std::endl;
+    std::cout << "last event time: " << outputBuffer.getLastEventTime() << std::endl;
+    
+    MidiBuffer::Iterator it(outputBuffer);
+    for (int i = 0; i < outputBuffer.getNumEvents(); i++){
+        MidiMessage m = MidiMessage();
+        it.getNextEvent(m, i);
+        std::cout << "note in buffer: " << m.getNoteNumber() << " " << m.getTimeStamp() << std::endl;
+        
+    }
+    
+    // LILY: FIXME, BREAKS HERE
+    StringArray devices = MidiOutput::getDevices();
+    std::cout << "Number of devices: " << devices.size() << std::endl;
+    for (auto i : devices)
+        std::cout << i << std::endl;
+    //String defaultOut = deviceManager.getDefaultMidiOutputName();
+    //std::cout << "default output: " << defaultOut << std::endl; // empty string
+    
+    // declared newDevice above
+    //midiOutput->sendBlockOfMessagesNow(outputBuffer);
+    //deviceManager.getDefaultMidiOutput()->sendBlockOfMessagesNow(outputBuffer);
+    
 }
 
 
@@ -593,7 +658,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     }
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){
-		bufferOut = combineData(bufferNotes, bufferTimes);
+		combineData(bufferNotes, bufferTimes);
         if (!bufferOut.empty()) {
             String logstring = "";
             for (NoteData n : bufferOut) {
@@ -603,6 +668,11 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         }
 		is_combine_button = true;
     }
+    else if (buttonThatWasClicked == &editNote){
+        edit = true;
+        // handleNoteOn will now change notes accordingly
+    }
+    
     else if (buttonThatWasClicked == &clearButton){
         bufferNotes.clear(); notes.clear();
         bufferTimes.clear(); times.clear();
