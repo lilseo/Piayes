@@ -119,6 +119,7 @@ private:
     std::vector<NoteData> notes;
     std::vector<std::vector<NoteData>> notesVectors;
     std::vector<double> times;
+	std::vector<MidiMessage> MidiRhythm;
     std::vector<int> notesMidi;
     std::vector<MidiMessage> temp;
     
@@ -156,7 +157,7 @@ private:
     
     void playNotes (std::vector<MidiMessage> temp);
     
-    void combineData(std::vector<NoteData> notes, std::vector<double> times);
+    void combineData(std::vector<NoteData> notes, std::vector<MidiMessage> MidiRhythm);
     
     int convertNameToMidi (String noteString);
     
