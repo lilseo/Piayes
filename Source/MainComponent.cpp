@@ -342,7 +342,6 @@ void MainContentComponent::comboBoxChanged (ComboBox* box)
     }
 }
 
-
 void MainContentComponent::logNoteMessage (const String& m) {
     notesBox.moveCaretToEnd();
     notesBox.insertTextAtCaret (m + newLine);
@@ -455,11 +454,47 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         notes.push_back(temp);
         bufferNotes = notes;
         
+        //make compatable with vector and chords
+        if (chordValue != 0) {
+            NoteData temp3;
+            if (chordValue == 1) {
+                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 4, true, true, 3);
+                temp3.note_integer = m.getNoteNumber() + 4;
+            }
+            else if (chordValue == 2) {
+                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 3, true, true, 3);
+                temp3.note_integer = m.getNoteNumber() + 3;
+            }
+            temp3.timeEnd = 0;
+            temp3.timeStart = 0;
+            notes.push_back(temp3);
+            
+            NoteData temp5;
+            temp5.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 7, true, true, 3);
+            temp5.note_integer = m.getNoteNumber() + 7;
+            temp5.timeEnd = 0;
+            temp5.timeStart = 0;
+            notes.push_back(temp5);
+        }
+        
+        notesVectors.push_back(notes);
+        bufferVectorNotes = notesVectors;
+        
         const MessageManagerLock mmLock;
         notesBox.clear();
+        //Make compatable with vector
         logNoteMessage("Notes: ");
-        for (NoteData n : bufferNotes)
-            logNoteMessage(n.note);
+//        for (NoteData n : bufferNotes)
+//            logNoteMessage(n.note);
+        for (auto nv : bufferVectorNotes) {
+            // put strings together and send those to log note message
+            String noteString = "";
+            for (NoteData n: nv) {
+                noteString += n.note;
+            }
+            logNoteMessage(noteString);
+        }
+        
     }
     
     const double time = m.getTimeStamp() - startTime;
@@ -543,6 +578,8 @@ void MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<
     
     NoteData newNote;
     double timeZero = times[0]; // timeStart of first note, subtracted from all subsequent times
+    
+    //TODO: make compatable with vector
     
     for (int i = 0; i < notes.size(); ++i) {
         newNote.note = notes[i].note;

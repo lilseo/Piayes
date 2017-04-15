@@ -23,6 +23,7 @@ static ScopedPointer<AudioDeviceManager> sharedAudioDeviceManager;
 // Global vectors to take hold buffer data
 std::vector<NoteData> bufferOut;
 std::vector<NoteData> bufferNotes;
+std::vector<std::vector<NoteData>> bufferVectorNotes;
 std::vector<double> bufferTimes;
 MidiBuffer outputBuffer; 
 MidiMessage newNote;
@@ -116,6 +117,7 @@ private:
     SynthAudioSource synthAudioSource;
     
     std::vector<NoteData> notes;
+    std::vector<std::vector<NoteData>> notesVectors;
     std::vector<double> times;
     std::vector<int> notesMidi;
     std::vector<MidiMessage> temp;
