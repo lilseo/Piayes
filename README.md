@@ -16,8 +16,11 @@ Record/Edit/Playback <br>
 Change Instruments <br>
 And Many More (Coming) <br>
 
-#### UI (Beta) <br>
-![alt tag](https://cloud.githubusercontent.com/assets/14114194/24487143/b4ef5758-14db-11e7-9f9e-55000df43239.png) 
+#### UI (Omega) <br>
+![alt tag](https://cloud.githubusercontent.com/assets/14114194/25075468/6cd67d32-22e3-11e7-84a3-4aca70f1d03b.png) 
+<br>
+When designing the UI we wanted what the user would be looking at to look as similar as possible to the mapped controller (picture below) in order to make the experience and usability as seamless and intuitive as possible. <br>
+![alt tag](https://cloud.githubusercontent.com/assets/14114194/25075491/fa270742-22e3-11e7-9961-2e85edddf84e.png)
 <br>
 
 ####Deploying *Piayes:B.R.A.D.*<br>
