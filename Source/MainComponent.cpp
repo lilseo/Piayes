@@ -448,14 +448,33 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
 //        else if(message.getControllerNumber() == 51){
 //            buttonClicked(&clearButton);
 //        }
+
+	if (record and setNotes) {
+		NoteData temp;
+        temp.note = MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 3);
+        temp.note_integer = message.getNoteNumber();
+        temp.timeEnd = 0;
+        temp.timeStart = 0;
+		temp.chordType = chordValue;
+        notes.push_back(temp);
+		std::cout << "NOTES PUSH BACK: " << temp.note_integer << std::endl;
+	}
+
     if(message.isNoteOn()){
         
         if(message.getControllerNumber() == 48){
+			if (record and setNotes) {
+				notes.pop_back();
+			}
             std::cout << "Start recording" << std::endl;
             stopRecordingFromController = false;
             buttonClicked(&recordButton);
+			midiRecordButton = true;
         }
         else if(message.getControllerNumber() == 49){
+			if (record and setNotes) {
+				notes.pop_back();
+			}
             std::cout << "Stop recording" << std::endl;
             stopRecordingFromController = true;
             buttonClicked(&stopRecordButton);
@@ -486,6 +505,9 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         }
     }
     else if(message.getControllerNumber() == 2){
+		if (record and setNotes) {
+			notes.pop_back();
+		}
         std::cout << "Set instrument: " << message.getControllerValue() << std::endl;
         if(message.getControllerValue() < 32){
             std::cout << "Sine" << std::endl;
@@ -509,10 +531,16 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         }
     }
     else if(message.getControllerNumber() == 3){
+		if (record and setNotes) {
+			notes.pop_back();
+		}
         std::cout << "Volume" << std::endl;
         volumeSlider.setValue(message.getControllerValue());
     }
     else if(message.getControllerNumber() == 5){
+		if (record and setNotes) {
+			notes.pop_back();
+		}
         std::cout << "Set notes/rhythm" << std::endl;
         if(message.getControllerValue() < 64){
             notesButton.triggerClick();
@@ -524,6 +552,9 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         }
     }
     else if(message.getControllerNumber() == 6){
+		if (record and setNotes) {
+			notes.pop_back();
+		}
         std::cout << "Set chords" << std::endl;
         if(message.getControllerValue() < 15){
             singleNoteButton.triggerClick();
@@ -550,6 +581,7 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             buttonClicked(&chordSeventhMinorButton);
 		}
     }
+	
 	
     
     if(chordValue and !((record and setRhythm))){
@@ -594,7 +626,7 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             MidiMessage m5(message);
             m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
 			MidiMessage m7(message);
-            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the major seventh
+            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the minor seventh
             synthAudioSource.midiCollector.addMessageToQueue(message);
             synthAudioSource.midiCollector.addMessageToQueue(m3);
             synthAudioSource.midiCollector.addMessageToQueue(m5);
@@ -607,7 +639,7 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             MidiMessage m5(message);
             m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
 			MidiMessage m7(message);
-            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the major seventh
+            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the minor seventh
             synthAudioSource.midiCollector.addMessageToQueue(message);
             synthAudioSource.midiCollector.addMessageToQueue(m3);
             synthAudioSource.midiCollector.addMessageToQueue(m5);
@@ -619,26 +651,71 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
 			logFeedback("Error: Not enough melody notes recorded");
 		}
 		else{
-//			if (notes[tempoCounter].isChord) {
-//				int numNotes = notes[tempoCounter].numChordNotes;
-//				for (int i = 0; i < numNotes; i++) {
-//					if (tempoCounter >= notes.size()) {
-//						logFeedback("Error: Not enough melody notes recorded");
-//					}
-//					else {
-//						MidiMessage m6(message);
-//						m6.setNoteNumber(notes[tempoCounter].note_integer);
-//						tempoCounter++;
-//						synthAudioSource.midiCollector.addMessageToQueue(m6);
-//					}
-//				}
-//			}
-//			else {
-				MidiMessage m6(message);
-				m6.setNoteNumber(notes[tempoCounter].note_integer);
-				synthAudioSource.midiCollector.addMessageToQueue(m6);
+			MidiMessage mR(message);
+			mR.setNoteNumber(notes[tempoCounter].note_integer);
+			if (notes[tempoCounter].chordType == 0) {
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
 				tempoCounter++;
-//			}
+			}
+			else if (notes[tempoCounter].chordType == 1) {
+				MidiMessage m3(message);
+				m3.setNoteNumber((int) notes[tempoCounter].note_integer + 4); // the major third
+				MidiMessage m5(message);
+				m5.setNoteNumber((int) notes[tempoCounter].note_integer + 7); // the perfect fifth
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
+				synthAudioSource.midiCollector.addMessageToQueue(m3);
+				synthAudioSource.midiCollector.addMessageToQueue(m5);
+				tempoCounter++;
+			}
+			else if (notes[tempoCounter].chordType == 2) {
+				MidiMessage m3(message);
+				m3.setNoteNumber((int) notes[tempoCounter].note_integer + 3); // the minor third
+				MidiMessage m5(message);
+				m5.setNoteNumber((int) notes[tempoCounter].note_integer + 7); // the perfect fifth
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
+				synthAudioSource.midiCollector.addMessageToQueue(m3);
+				synthAudioSource.midiCollector.addMessageToQueue(m5);
+				tempoCounter++;
+			}
+			else if (notes[tempoCounter].chordType == 3) {
+				MidiMessage m3(message);
+				m3.setNoteNumber((int) notes[tempoCounter].note_integer + 4); // the major third
+				MidiMessage m5(message);
+				m5.setNoteNumber((int) notes[tempoCounter].note_integer + 7); // the perfect fifth
+				MidiMessage m7(message);
+				m7.setNoteNumber((int) notes[tempoCounter].note_integer + 11); // the major seventh
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
+				synthAudioSource.midiCollector.addMessageToQueue(m3);
+				synthAudioSource.midiCollector.addMessageToQueue(m5);
+				synthAudioSource.midiCollector.addMessageToQueue(m7);
+				tempoCounter++;
+			}
+			else if (notes[tempoCounter].chordType == 4) {
+				MidiMessage m3(message);
+				m3.setNoteNumber((int) notes[tempoCounter].note_integer + 4); // the major third
+				MidiMessage m5(message);
+				m5.setNoteNumber((int) notes[tempoCounter].note_integer + 7); // the perfect fifth
+				MidiMessage m7(message);
+				m7.setNoteNumber((int) notes[tempoCounter].note_integer + 10); // the minor seventh
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
+				synthAudioSource.midiCollector.addMessageToQueue(m3);
+				synthAudioSource.midiCollector.addMessageToQueue(m5);
+				synthAudioSource.midiCollector.addMessageToQueue(m7);
+				tempoCounter++;
+			}
+			else if (notes[tempoCounter].chordType == 5) {
+				MidiMessage m3(message);
+				m3.setNoteNumber((int) notes[tempoCounter].note_integer + 3); // the minor third
+				MidiMessage m5(message);
+				m5.setNoteNumber((int) notes[tempoCounter].note_integer + 7); // the perfect fifth
+				MidiMessage m7(message);
+				m7.setNoteNumber((int) notes[tempoCounter].note_integer + 10); // the minor seventh
+				synthAudioSource.midiCollector.addMessageToQueue(mR);
+				synthAudioSource.midiCollector.addMessageToQueue(m3);
+				synthAudioSource.midiCollector.addMessageToQueue(m5);
+				synthAudioSource.midiCollector.addMessageToQueue(m7);
+				tempoCounter++;
+			}
 		}
 	}
     else {
@@ -682,43 +759,45 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
     if (record and setNotes) {
         temp.push_back(m);
         
-        NoteData temp;
-        temp.note = MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
-        temp.note_integer = m.getNoteNumber();
-        temp.timeEnd = 0;
-        temp.timeStart = 0;
-        notes.push_back(temp);
+//        NoteData temp;
+//        temp.note = MidiMessage::getMidiNoteName (m.getNoteNumber(), true, true, 3);
+//        temp.note_integer = m.getNoteNumber();
+//        temp.timeEnd = 0;
+//        temp.timeStart = 0;
+//		temp.chordType = chordValue;
+//        notes.push_back(temp);
+//		std::cout << "NOTES PUSH BACK: " << temp.note_integer << std::endl;
         bufferNotes = notes;
         
         const MessageManagerLock mmLock;
         notesBox.clear();
         logNoteMessage("Notes: ");
         if (chordValue == 0) {
-        for (NoteData n : bufferNotes)
-            logNoteMessage(n.note);
-        }
+			for (NoteData n : bufferNotes)
+				logNoteMessage(n.note);
+			}
         else if (chordValue != 0) {
-            //make compatable with vector and chords
-            NoteData temp3;
-            if (chordValue == 1) {
-                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 4, true, true, 3);
-                temp3.note_integer = m.getNoteNumber() + 4;
-            }
-            else if (chordValue == 2) {
-                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 3, true, true, 3);
-                temp3.note_integer = m.getNoteNumber() + 3;
-            }
-            temp3.timeEnd = 0;
-            temp3.timeStart = 0;
-            notes.push_back(temp3);
-            
-            NoteData temp5;
-            temp5.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 7, true, true, 3);
-            temp5.note_integer = m.getNoteNumber() + 7;
-            temp5.timeEnd = 0;
-            temp5.timeStart = 0;
-            notes.push_back(temp5);
-            
+//            //make compatable with vector and chords
+//            NoteData temp3;
+//            if (chordValue == 1) {
+//                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 4, true, true, 3);
+//                temp3.note_integer = m.getNoteNumber() + 4;
+//            }
+//            else if (chordValue == 2) {
+//                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 3, true, true, 3);
+//                temp3.note_integer = m.getNoteNumber() + 3;
+//            }
+//            temp3.timeEnd = 0;
+//            temp3.timeStart = 0;
+//            notes.push_back(temp3);
+//            
+//            NoteData temp5;
+//            temp5.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 7, true, true, 3);
+//            temp5.note_integer = m.getNoteNumber() + 7;
+//            temp5.timeEnd = 0;
+//            temp5.timeStart = 0;
+//            notes.push_back(temp5);
+			
             notesVectors.push_back(notes);
             bufferVectorNotes = notesVectors;
             notesVectors.clear();
@@ -884,7 +963,22 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         std::cout << "Clicked rhythm button." << std::endl;
 		setNotes = false;
         setRhythm = true;
-		tempoCounter = 1;
+		tempoCounter = 0;
+		if (midiRecordButton) {
+			tempoCounter = 1;
+		}
+		
+//		if (chordValue == 0) {
+//			tempoCounter = 1;
+//		}
+//		else if (chordValue == 1 or chordValue == 2) {
+//			tempoCounter = 3;
+//		}
+//		else if (chordValue == 3 or chordValue == 4 or chordValue == 5) {
+//			tempoCounter = 4;
+//		}
+		
+		
     }
     else if (buttonThatWasClicked == &singleNoteButton) {
         chordValue = 0;

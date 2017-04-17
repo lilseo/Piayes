@@ -87,7 +87,8 @@ private:
     bool record = false;
     bool setNotes = false;
     bool setRhythm = false;
-                                    
+	bool midiRecordButton = false;
+    
     ToggleButton sineButton;
     ToggleButton drumButton;
     ToggleButton bassButton;

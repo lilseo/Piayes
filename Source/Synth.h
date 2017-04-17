@@ -6,6 +6,14 @@
 
 // a value based on what, if any, chord feature is active
 // 0 = no chord feature active, 1 = major
+struct NoteData{
+    String note;
+    double timeStart;
+    double timeEnd;
+	int note_integer;
+	int chordType;
+};
+
 extern int chordValue;
 extern bool is_combine_button;
 extern std::vector<NoteData> bufferOut;
@@ -13,6 +21,8 @@ extern std::vector<NoteData> bufferOut;
 extern bool drum;
 extern bool bass;
 extern bool piano;
+
+
 
 struct SineWaveSound : public SynthesiserSound {
     SineWaveSound();

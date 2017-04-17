@@ -137,8 +137,8 @@ void SynthAudioSource::setUsingSampledSound() {
     if (drum == true) {
 //        std::cout << File::getCurrentWorkingDirectory().getFileName() << std::endl;
 //        
-//        char wd[1024];
-//        std::cout << getcwd(wd, sizeof(wd)) << std::endl;
+        char wd[1024];
+        std::cout << getcwd(wd, sizeof(wd)) << std::endl;
 
         FileInputStream* sound = new FileInputStream (File(pathName + "/Electro-Tom.wav"));
         
