@@ -363,7 +363,7 @@ void MainContentComponent::setMidiInput (int index) {
 // Not working yet - beta material
 void MainContentComponent::setMidiOutput (int index) {
     //MidiOutput midiOutput;
-    auto midiOutput = MidiOutput::openDevice(0);
+    //auto midiOutput = MidiOutput::openDevice(0);
     //    currentMidiOutput = nullptr;
     //    if (MidiOutput::getDevices() [index].isNotEmpty()) {
     //        currentMidiOutput = MidiOutput::openDevice (index);
@@ -382,7 +382,6 @@ void MainContentComponent::comboBoxChanged (ComboBox* box)
         setMidiOutput (midiOutputList.getSelectedItemIndex());
     }
 }
-
 
 void MainContentComponent::logNoteMessage (const String& m) {
     notesBox.moveCaretToEnd();
@@ -534,7 +533,10 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         
     //This line allows the synth to handle input from the MIDI controller
      synthAudioSource.midiCollector.addMessageToQueue(message);
+	 std::cout << message.getTimeStamp() << std::endl;
     }
+	//std::cout << message.getTimeStamp() << std::endl;
+	 //MidiRhythm.push_back(message);
 }
 
 
@@ -582,8 +584,47 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         const MessageManagerLock mmLock;
         notesBox.clear();
         logNoteMessage("Notes: ");
+        if (chordValue == 0) {
         for (NoteData n : bufferNotes)
             logNoteMessage(n.note);
+        }
+        else if (chordValue != 0) {
+            //make compatable with vector and chords
+            NoteData temp3;
+            if (chordValue == 1) {
+                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 4, true, true, 3);
+                temp3.note_integer = m.getNoteNumber() + 4;
+            }
+            else if (chordValue == 2) {
+                temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 3, true, true, 3);
+                temp3.note_integer = m.getNoteNumber() + 3;
+            }
+            temp3.timeEnd = 0;
+            temp3.timeStart = 0;
+            notes.push_back(temp3);
+            
+            NoteData temp5;
+            temp5.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 7, true, true, 3);
+            temp5.note_integer = m.getNoteNumber() + 7;
+            temp5.timeEnd = 0;
+            temp5.timeStart = 0;
+            notes.push_back(temp5);
+            
+            notesVectors.push_back(notes);
+            bufferVectorNotes = notesVectors;
+            notesVectors.clear();
+            
+            for (auto nv : bufferVectorNotes) {
+                // put strings together and send those to log note message
+                String noteString = "";
+                for (NoteData n: nv) {
+                    noteString += n.note;
+                }
+                logNoteMessage(noteString);
+            }
+            
+        }
+        
     }
     
     const double time = m.getTimeStamp() - startTime;
@@ -595,6 +636,7 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
     const String timecode (String::formatted ("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis));
     
     if (record and setRhythm) {
+		MidiRhythm.push_back(m);
         times.push_back(time);
         bufferTimes = times;
         
@@ -621,6 +663,7 @@ void MainContentComponent::handleNoteOff (MidiKeyboardState*, int midiChannel, i
     const String timecode (String::formatted ("%02d:%02d:%02d.%03d", hours, minutes, seconds, millis));
     
     if (record and setRhythm) {
+		MidiRhythm.push_back(m);
         times.push_back(time);
         bufferTimes = times;
         
@@ -655,70 +698,11 @@ void MainContentComponent::playNotes (std::vector<MidiMessage> temp) {
 }
 
 
-void MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<double> times) {
-    
-    std::vector<NoteData> bufferOut;
-    
-    if (notes.empty() || times.empty()) {
-        logFeedback("Record (1) Notes and (2) Tempo before combining tracks.");
-        outputBuffer.clear();
-        return;
+void MainContentComponent::combineData(std::vector<NoteData> notes, std::vector<MidiMessage> MidiRhythm) {
+    for (int i = 0; i < MidiRhythm.size(); i=i+2) {
+			synthAudioSource.midiCollector.addMessageToQueue(MidiRhythm[i]);
+			outputBuffer.addEvent(MidiRhythm[i], i);
     }
-    
-    NoteData newNote;
-    double timeZero = times[0]; // timeStart of first note, subtracted from all subsequent times
-    
-    for (int i = 0; i < notes.size(); ++i) {
-        newNote.note = notes[i].note;
-        newNote.note_integer = notes[i].note_integer;
-        
-        if (i < (times.size() / 2)) {
-            newNote.timeStart = times[i * 2] - timeZero;
-            newNote.timeEnd = times[(i * 2) + 1] - timeZero;
-        }
-        // Special case: user does not input rhythm for all notes
-        // Default: set note to start 1.0 sec after last note ended, duration 0.5 seconds
-        else {
-            double lastNoteEnd = bufferOut[bufferOut.size()-1].timeEnd;
-            newNote.timeStart = lastNoteEnd + 1.0;
-            newNote.timeEnd = newNote.timeStart + 0.5;
-        }
-        
-        bufferOut.push_back(newNote);
-        MidiMessage newMidiMessage = MidiMessage::noteOn(1, 0, (uint8)100);
-        newMidiMessage.setNoteNumber(newNote.note_integer);
-        newMidiMessage.setTimeStamp(newNote.timeStart); // only timeStart for now
-        
-        outputBuffer.addEvent(newMidiMessage, i);
-        
-//        std::cout << "new midi message: " << newMidiMessage.getNoteNumber();
-//        std::cout << " " << newMidiMessage.getTimeStamp() << std::endl;
-        
-    } // for (all notes recorded)
-    
-    std::cout << "output buffer num events: " << outputBuffer.getNumEvents() << std::endl;
-    std::cout << "last event time: " << outputBuffer.getLastEventTime() << std::endl;
-    
-    MidiBuffer::Iterator it(outputBuffer);
-    for (int i = 0; i < outputBuffer.getNumEvents(); i++){
-        MidiMessage m = MidiMessage();
-        it.getNextEvent(m, i);
-        std::cout << "note in buffer: " << m.getNoteNumber() << " " << m.getTimeStamp() << std::endl;
-        
-    }
-    
-    // LILY: FIXME, BREAKS HERE
-    StringArray devices = MidiOutput::getDevices();
-    std::cout << "Number of devices: " << devices.size() << std::endl;
-    for (auto i : devices)
-        std::cout << i << std::endl;
-    //String defaultOut = deviceManager.getDefaultMidiOutputName();
-    //std::cout << "default output: " << defaultOut << std::endl; // empty string
-    
-    // declared newDevice above
-    //midiOutput->sendBlockOfMessagesNow(outputBuffer);
-    //deviceManager.getDefaultMidiOutput()->sendBlockOfMessagesNow(outputBuffer);
-    
 }
 
 
@@ -809,7 +793,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     }
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){
-		combineData(bufferNotes, bufferTimes);
+		combineData(bufferNotes, MidiRhythm);
         if (!bufferOut.empty()) {
             String logstring = "";
             for (NoteData n : bufferOut) {
