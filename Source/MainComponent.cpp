@@ -217,6 +217,27 @@ MainContentComponent::MainContentComponent()
     chordMinorButton.addListener(this);
 	chordMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
 	
+	// putting in seventh major chord activator
+    addAndMakeVisible (chordSeventhMajorButton);
+    chordSeventhMajorButton.setButtonText("Play 7th Major Chords");
+    chordSeventhMajorButton.setRadioGroupId(3);
+    chordSeventhMajorButton.addListener(this);
+	chordSeventhMajorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+	
+	// putting in seventh dominant chord activator
+    addAndMakeVisible (chordSeventhDominantButton);
+    chordSeventhDominantButton.setButtonText("Play 7th Dominant Chords");
+    chordSeventhDominantButton.setRadioGroupId(3);
+    chordSeventhDominantButton.addListener(this);
+	chordSeventhDominantButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+	
+	// putting in seventh minor chord activator
+    addAndMakeVisible (chordSeventhMinorButton);
+    chordSeventhMinorButton.setButtonText("Play 7th Minor Chords");
+    chordSeventhMinorButton.setRadioGroupId(3);
+    chordSeventhMinorButton.addListener(this);
+	chordSeventhMinorButton.setColour(juce::ToggleButton::textColourId, juce::Colour(250, 250, 250));
+	
     
     audioSourcePlayer.setSource (&synthAudioSource); // only change to add sound
     deviceManager.addAudioCallback (&audioSourcePlayer);
@@ -273,6 +294,9 @@ void MainContentComponent::resized() {
     singleNoteButton.setBounds(780, 240, 150, 24);
     chordMajorButton.setBounds (780, 270, 150, 24);
     chordMinorButton.setBounds(780, 305, 150, 24);
+	chordSeventhMajorButton.setBounds(925, 240, 200, 24);
+	chordSeventhDominantButton.setBounds(925, 270, 200, 24);
+	chordSeventhMinorButton.setBounds(925, 305, 200, 24);
     
     volumeSliderLabel.setBounds(1000, 20, 200, 30);
     volumeSlider.setBounds(1080, 60, 20, 150);
@@ -501,18 +525,30 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
     }
     else if(message.getControllerNumber() == 6){
         std::cout << "Set chords" << std::endl;
-        if(message.getControllerValue() < 43){
+        if(message.getControllerValue() < 15){
             singleNoteButton.triggerClick();
             buttonClicked(&singleNoteButton);
         }
-        else if(message.getControllerValue() < 85){
+        else if(message.getControllerValue() < 30){
             chordMajorButton.triggerClick();
             buttonClicked(&chordMajorButton);
         }
-        else{
+        else if(message.getControllerValue() < 45){
             chordMinorButton.triggerClick();
             buttonClicked(&chordMinorButton);
         }
+		else if(message.getControllerValue() < 60){
+            chordSeventhMajorButton.triggerClick();
+            buttonClicked(&chordSeventhMajorButton);
+        }
+		else if(message.getControllerValue() < 75){
+            chordSeventhDominantButton.triggerClick();
+            buttonClicked(&chordSeventhDominantButton);
+        }
+		else {
+			chordSeventhMinorButton.triggerClick();
+            buttonClicked(&chordSeventhMinorButton);
+		}
     }
 	
     
@@ -537,6 +573,45 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             synthAudioSource.midiCollector.addMessageToQueue(message);
             synthAudioSource.midiCollector.addMessageToQueue(m3);
             synthAudioSource.midiCollector.addMessageToQueue(m5);
+        }
+		else if (chordValue == 3) {
+            // value 3 is major seventh chord
+            MidiMessage m3(message);
+            m3.setNoteNumber((int) message.getNoteNumber() + 4); // the major third
+            MidiMessage m5(message);
+            m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+			MidiMessage m7(message);
+            m7.setNoteNumber((int) message.getNoteNumber() + 11); // the major seventh
+            synthAudioSource.midiCollector.addMessageToQueue(message);
+            synthAudioSource.midiCollector.addMessageToQueue(m3);
+            synthAudioSource.midiCollector.addMessageToQueue(m5);
+			synthAudioSource.midiCollector.addMessageToQueue(m7);
+        }
+		else if (chordValue == 4) {
+            // value 3 is dominant seventh chord
+            MidiMessage m3(message);
+            m3.setNoteNumber((int) message.getNoteNumber() + 4); // the major third
+            MidiMessage m5(message);
+            m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+			MidiMessage m7(message);
+            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the major seventh
+            synthAudioSource.midiCollector.addMessageToQueue(message);
+            synthAudioSource.midiCollector.addMessageToQueue(m3);
+            synthAudioSource.midiCollector.addMessageToQueue(m5);
+			synthAudioSource.midiCollector.addMessageToQueue(m7);
+        }
+		else if (chordValue == 5) {
+            // value 3 is minor seventh chord
+            MidiMessage m3(message);
+            m3.setNoteNumber((int) message.getNoteNumber() + 3); // the minor third
+            MidiMessage m5(message);
+            m5.setNoteNumber((int) message.getNoteNumber() + 7); // the perfect fifth
+			MidiMessage m7(message);
+            m7.setNoteNumber((int) message.getNoteNumber() + 10); // the major seventh
+            synthAudioSource.midiCollector.addMessageToQueue(message);
+            synthAudioSource.midiCollector.addMessageToQueue(m3);
+            synthAudioSource.midiCollector.addMessageToQueue(m5);
+			synthAudioSource.midiCollector.addMessageToQueue(m7);
         }
     }
 	else if (setRhythm & record) {
@@ -807,9 +882,9 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     }
     else if (buttonThatWasClicked == &rhythmButton) {
         std::cout << "Clicked rhythm button." << std::endl;
-        setNotes = false;
+		setNotes = false;
         setRhythm = true;
-		tempoCounter = 0;
+		tempoCounter = 1;
     }
     else if (buttonThatWasClicked == &singleNoteButton) {
         chordValue = 0;
@@ -825,6 +900,24 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         //            chordValue = 0;
         //        else
         chordValue = 2;
+    }
+	else if (buttonThatWasClicked == &chordSeventhMajorButton) {
+        //        if (chordValue == 2)
+        //            chordValue = 0;
+        //        else
+        chordValue = 3;
+    }
+	else if (buttonThatWasClicked == &chordSeventhDominantButton) {
+        //        if (chordValue == 2)
+        //            chordValue = 0;
+        //        else
+        chordValue = 4;
+    }
+	else if (buttonThatWasClicked == &chordSeventhMinorButton) {
+        //        if (chordValue == 2)
+        //            chordValue = 0;
+        //        else
+        chordValue = 5;
     }
     // Combine pitch and rhythm data
     else if (buttonThatWasClicked == &combineButton){

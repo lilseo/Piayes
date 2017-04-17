@@ -79,6 +79,10 @@ private:
     ToggleButton singleNoteButton;
     ToggleButton chordMajorButton;
     ToggleButton chordMinorButton;
+	ToggleButton chordSeventhMajorButton;
+	ToggleButton chordSeventhDominantButton;
+	ToggleButton chordSeventhMinorButton;
+	
                                     
     bool record = false;
     bool setNotes = false;
