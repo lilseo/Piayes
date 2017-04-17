@@ -457,8 +457,15 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
         notes.push_back(temp);
         bufferNotes = notes;
         
-        //make compatable with vector and chords
-        if (chordValue != 0) {
+        const MessageManagerLock mmLock;
+        notesBox.clear();
+        logNoteMessage("Notes: ");
+        if (chordValue == 0) {
+        for (NoteData n : bufferNotes)
+            logNoteMessage(n.note);
+        }
+        else if (chordValue != 0) {
+            //make compatable with vector and chords
             NoteData temp3;
             if (chordValue == 1) {
                 temp3.note = MidiMessage::getMidiNoteName (m.getNoteNumber() + 4, true, true, 3);
@@ -478,24 +485,20 @@ void MainContentComponent::handleNoteOn (MidiKeyboardState*, int midiChannel, in
             temp5.timeEnd = 0;
             temp5.timeStart = 0;
             notes.push_back(temp5);
-        }
-        
-        notesVectors.push_back(notes);
-        bufferVectorNotes = notesVectors;
-        
-        const MessageManagerLock mmLock;
-        notesBox.clear();
-        //Make compatable with vector
-        logNoteMessage("Notes: ");
-//        for (NoteData n : bufferNotes)
-//            logNoteMessage(n.note);
-        for (auto nv : bufferVectorNotes) {
-            // put strings together and send those to log note message
-            String noteString = "";
-            for (NoteData n: nv) {
-                noteString += n.note;
+            
+            notesVectors.push_back(notes);
+            bufferVectorNotes = notesVectors;
+            notesVectors.clear();
+            
+            for (auto nv : bufferVectorNotes) {
+                // put strings together and send those to log note message
+                String noteString = "";
+                for (NoteData n: nv) {
+                    noteString += n.note;
+                }
+                logNoteMessage(noteString);
             }
-            logNoteMessage(noteString);
+            
         }
         
     }
