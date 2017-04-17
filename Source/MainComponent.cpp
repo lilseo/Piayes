@@ -465,18 +465,22 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         std::cout << "Set instrument: " << message.getControllerValue() << std::endl;
         if(message.getControllerValue() < 32){
             std::cout << "Sine" << std::endl;
+            sineButton.triggerClick();
             buttonClicked(&sineButton);
         }
         else if(message.getControllerValue() < 64){
             std::cout << "Drums" << std::endl;
+            drumButton.triggerClick();
             buttonClicked(&drumButton);
         }
         else if(message.getControllerValue() < 96){
             std::cout << "Bass" << std::endl;
+            bassButton.triggerClick();
             buttonClicked(&bassButton);
         }
         else{
             std::cout << "Piano" << std::endl;
+            pianoButton.triggerClick();
             buttonClicked(&pianoButton);
         }
     }
@@ -487,21 +491,26 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
     else if(message.getControllerNumber() == 5){
         std::cout << "Set notes/rhythm" << std::endl;
         if(message.getControllerValue() < 64){
+            notesButton.triggerClick();
             buttonClicked(&notesButton);
         }
         else{
+            rhythmButton.triggerClick();
             buttonClicked(&rhythmButton);
         }
     }
     else if(message.getControllerNumber() == 6){
         std::cout << "Set chords" << std::endl;
         if(message.getControllerValue() < 43){
+            singleNoteButton.triggerClick();
             buttonClicked(&singleNoteButton);
         }
         else if(message.getControllerValue() < 85){
+            chordMajorButton.triggerClick();
             buttonClicked(&chordMajorButton);
         }
         else{
+            chordMinorButton.triggerClick();
             buttonClicked(&chordMinorButton);
         }
     }
