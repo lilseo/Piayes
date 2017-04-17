@@ -146,38 +146,38 @@ MainContentComponent::MainContentComponent()
 	addAndMakeVisible(feedbackLabel);
 	feedbackLabel.setText("Real Time Feedback", dontSendNotification);
 	feedbackLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	feedbackLabel.setFont(juce::Font(20, bold));
+	feedbackLabel.setFont(juce::Font(26, bold));
 
 	
 	addAndMakeVisible(instrumentsLabel);
 	instrumentsLabel.setText("Instruments", dontSendNotification);
 	instrumentsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	instrumentsLabel.setFont(juce::Font(20, bold));
+	instrumentsLabel.setFont(juce::Font(26, bold));
 
 	addAndMakeVisible(chordsLabel);
 	chordsLabel.setText("Chords", dontSendNotification);
 	chordsLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	chordsLabel.setFont(juce::Font(20, bold));
+	chordsLabel.setFont(juce::Font(26, bold));
 
 	addAndMakeVisible(editingLabel);
 	editingLabel.setText("Recording & Editing", dontSendNotification);
 	editingLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	editingLabel.setFont(juce::Font(20, bold));
+	editingLabel.setFont(juce::Font(26, bold));
 	
 	addAndMakeVisible(melodyRhythm);
 	melodyRhythm.setText("Melody & Rhythm", dontSendNotification);
 	melodyRhythm.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	melodyRhythm.setFont(juce::Font(20, bold));
+	melodyRhythm.setFont(juce::Font(26, bold));
 
 	addAndMakeVisible(MemoryLabel);
 	MemoryLabel.setText("Save & Load", dontSendNotification);
 	MemoryLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-	MemoryLabel.setFont(juce::Font(20, bold));
+	MemoryLabel.setFont(juce::Font(26, bold));
         
     addAndMakeVisible(volumeSliderLabel);
     volumeSliderLabel.setText("Volume", dontSendNotification);
     volumeSliderLabel.setColour(juce::Label::textColourId, juce::Colour(255, 218, 45));
-    volumeSliderLabel.setFont(juce::Font(20, bold));
+    volumeSliderLabel.setFont(juce::Font(26, bold));
     
     addAndMakeVisible(volumeUpLabel);
     volumeUpLabel.setText("Volume Up", dontSendNotification);
@@ -240,8 +240,48 @@ MainContentComponent::~MainContentComponent() {
 
 void MainContentComponent::resized() {
     Rectangle<int> area (getLocalBounds());
-    keyboardComponent.setBounds (area.removeFromTop (80).reduced(8));
+    area.removeFromRight(375);
+    keyboardComponent.setBounds (area.removeFromBottom(80));
     
+    editingLabel.setBounds(130, 20, 400, 30);
+    recordButton.setBounds (40, 60, 80, 80);
+    stopRecordButton.setBounds (150, 60, 80, 80);
+    editNote.setBounds(260, 60, 80, 80);
+    clearButton.setBounds (370, 60, 80, 80);
+    
+    playNotesButton.setBounds (40, 160, 80, 80);
+    combineButton.setBounds (150, 160, 80, 80);
+    saveButton.setBounds (260, 160, 80, 80);
+    loadButton.setBounds (370, 160, 80, 80);
+    
+    feedbackLabel.setBounds(1150, 20, 400, 30);
+    notesBox.setBounds (1115, 60, 150, 325);
+    rhythmBox.setBounds (1280, 60, 150, 325);
+    feedbackBox.setBounds(1115, 400, 315, 70);
+    
+    melodyRhythm.setBounds(520, 20, 200, 30);
+    notesButton.setBounds (570, 60, 150, 24);
+    rhythmButton.setBounds (570, 100, 150, 24);
+    
+    instrumentsLabel.setBounds(775, 20, 200, 30);
+    sineButton.setBounds (825, 60, 150, 24);
+    drumButton.setBounds (825, 90, 150, 24);
+    bassButton.setBounds (825, 120, 150, 24);
+    pianoButton.setBounds (825, 150, 150, 24);
+    
+    chordsLabel.setBounds(800, 200, 200, 30);
+    singleNoteButton.setBounds(780, 240, 150, 24);
+    chordMajorButton.setBounds (780, 270, 150, 24);
+    chordMinorButton.setBounds(780, 305, 150, 24);
+    
+    volumeSliderLabel.setBounds(1000, 20, 200, 30);
+    volumeSlider.setBounds(1080, 60, 20, 150);
+    
+    volumeUpLabel.setBounds(990, 60, 75, 20);
+    volumeUpButton.setBounds(1020, 90, 20, 20);
+    volumeDownLabel.setBounds(985, 120, 85, 30);
+    volumeDownButton.setBounds(1020, 160, 20, 20);
+    /*
     notesBox.setBounds (240, 275, 150, 225);
     rhythmBox.setBounds (410, 275, 150, 225);
     feedbackBox.setBounds(240, 525, 320, 50);
@@ -284,6 +324,7 @@ void MainContentComponent::resized() {
     
     volumeUpButton.setBounds(45, 310, 20, 20);
     volumeDownButton.setBounds(45, 375, 20, 20);
+     */
 
 }
 
@@ -366,25 +407,106 @@ void MainContentComponent::logFeedback (const String& m) {
 void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message) {
     const ScopedValueSetter<bool> scopedInputFlag (isAddingFromMidiInput, true);
     keyboardState.processNextMidiEvent (message);
-    if(message.isController()){
-        std::cout << "Controller number: ";
-        std::cout << message.getControllerNumber() << std::endl;
-        std::cout << "Controller value: ";
-        std::cout << message.getControllerValue() << std::endl;
-        if(message.getControllerNumber() == 1){
-            volumeSlider.setValue(message.getControllerValue());
-        }
-        else if(message.getControllerNumber() == 49){
+//    std::cout << "Controller number: ";
+//    std::cout << message.getControllerNumber() << std::endl;
+//    std::cout << "Controller value: ";
+//    std::cout << message.getControllerValue() << std::endl;
+
+//        if(message.getControllerNumber() == 1){
+//            volumeSlider.setValue(message.getControllerValue());
+//        }
+//        else if(message.getControllerNumber() == 49){
+//            buttonClicked(&recordButton);
+//        }
+//        else if(message.getControllerNumber() == 50){
+//            buttonClicked(&stopRecordButton);
+//            stopRecordingFromController = true; //Pressing this button adds a D2 to end of recording need to drop it off
+//        }
+//        else if(message.getControllerNumber() == 51){
+//            buttonClicked(&clearButton);
+//        }
+    if(message.isNoteOn()){
+        
+        if(message.getControllerNumber() == 48){
+            std::cout << "Start recording" << std::endl;
+            stopRecordingFromController = false;
             buttonClicked(&recordButton);
         }
-        else if(message.getControllerNumber() == 50){
+        else if(message.getControllerNumber() == 49){
+            std::cout << "Stop recording" << std::endl;
+            stopRecordingFromController = true;
             buttonClicked(&stopRecordButton);
-            stopRecordingFromController = true; //Pressing this button adds a D2 to end of recording need to drop it off
+        }
+        else if(message.getControllerNumber() == 50){
+            std::cout << "Edit Notes" << std::endl;
+            buttonClicked(&editNote);
         }
         else if(message.getControllerNumber() == 51){
+            std::cout << "Clear recording" << std::endl;
             buttonClicked(&clearButton);
-        }   
+        }
+        else if(message.getControllerNumber() == 44){
+            std::cout << "Playback notes" << std::endl;
+            buttonClicked(&combineButton);
+        }
+        else if(message.getControllerNumber() == 45){
+            std::cout << "Combine tracks" << std::endl;
+            buttonClicked(&combineButton);
+        }
+        else if(message.getControllerNumber() == 46){
+            std::cout << "Save" << std::endl;
+            buttonClicked(&saveButton);
+        }
+        else if(message.getControllerNumber() == 47){
+            std::cout << "Load" << std::endl;
+            buttonClicked(&loadButton);
+        }
     }
+    else if(message.getControllerNumber() == 2){
+        std::cout << "Set instrument: " << message.getControllerValue() << std::endl;
+        if(message.getControllerValue() < 32){
+            std::cout << "Sine" << std::endl;
+            buttonClicked(&sineButton);
+        }
+        else if(message.getControllerValue() < 64){
+            std::cout << "Drums" << std::endl;
+            buttonClicked(&drumButton);
+        }
+        else if(message.getControllerValue() < 96){
+            std::cout << "Bass" << std::endl;
+            buttonClicked(&bassButton);
+        }
+        else{
+            std::cout << "Piano" << std::endl;
+            buttonClicked(&pianoButton);
+        }
+    }
+    else if(message.getControllerNumber() == 3){
+        std::cout << "Volume" << std::endl;
+        volumeSlider.setValue(message.getControllerValue());
+    }
+    else if(message.getControllerNumber() == 5){
+        std::cout << "Set notes/rhythm" << std::endl;
+        if(message.getControllerValue() < 64){
+            buttonClicked(&notesButton);
+        }
+        else{
+            buttonClicked(&rhythmButton);
+        }
+    }
+    else if(message.getControllerNumber() == 6){
+        std::cout << "Set chords" << std::endl;
+        if(message.getControllerValue() < 43){
+            buttonClicked(&singleNoteButton);
+        }
+        else if(message.getControllerValue() < 85){
+            buttonClicked(&chordMajorButton);
+        }
+        else{
+            buttonClicked(&chordMinorButton);
+        }
+    }
+    
     if(chordValue){
         if (chordValue == 1) {
             // value 1 is major chords
@@ -409,6 +531,8 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
         }
     }
     else{
+        
+    //This line allows the synth to handle input from the MIDI controller
      synthAudioSource.midiCollector.addMessageToQueue(message);
     }
 }
@@ -842,7 +966,7 @@ void MainContentComponent::sliderValueChanged(Slider *slider){
             std::cout << "Enter failure" << std::endl;
         }
     }
-    SystemAudioVolume::setGain(slider->getValue() / 100);
+    SystemAudioVolume::setGain(slider->getValue() / 127);
 }
 
 

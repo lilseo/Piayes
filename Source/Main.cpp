@@ -49,7 +49,10 @@ class PiayesApplication  : public JUCEApplication {
             setUsingNativeTitleBar (true);
             setContentOwned (createMainContentComponent(), true);
             setResizable (true, true);
-            
+            Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+            int x = r.getWidth();
+            int y = r.getHeight();
+            setSize(x, y - 400);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }
