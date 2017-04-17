@@ -505,8 +505,9 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             buttonClicked(&chordMinorButton);
         }
     }
+	
     
-    if(chordValue){
+    if(chordValue and !((record and setRhythm))){
         if (chordValue == 1) {
             // value 1 is major chords
             MidiMessage m3(message);
@@ -529,14 +530,38 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             synthAudioSource.midiCollector.addMessageToQueue(m5);
         }
     }
-    else{
-        
-    //This line allows the synth to handle input from the MIDI controller
-     synthAudioSource.midiCollector.addMessageToQueue(message);
-	 std::cout << message.getTimeStamp() << std::endl;
+	else if (setRhythm & record) {
+		if (tempoCounter >= notes.size()) {
+			logFeedback("Error: Not enough melody notes recorded");
+		}
+		else{
+//			if (notes[tempoCounter].isChord) {
+//				int numNotes = notes[tempoCounter].numChordNotes;
+//				for (int i = 0; i < numNotes; i++) {
+//					if (tempoCounter >= notes.size()) {
+//						logFeedback("Error: Not enough melody notes recorded");
+//					}
+//					else {
+//						MidiMessage m6(message);
+//						m6.setNoteNumber(notes[tempoCounter].note_integer);
+//						tempoCounter++;
+//						synthAudioSource.midiCollector.addMessageToQueue(m6);
+//					}
+//				}
+//			}
+//			else {
+				MidiMessage m6(message);
+				m6.setNoteNumber(notes[tempoCounter].note_integer);
+				synthAudioSource.midiCollector.addMessageToQueue(m6);
+				tempoCounter++;
+//			}
+		}
+	}
+    else {
+		//This line allows the synth to handle input from the MIDI controller
+		synthAudioSource.midiCollector.addMessageToQueue(message);
+		std::cout << message.getTimeStamp() << std::endl;
     }
-	//std::cout << message.getTimeStamp() << std::endl;
-	 //MidiRhythm.push_back(message);
 }
 
 
@@ -775,6 +800,7 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         std::cout << "Clicked rhythm button." << std::endl;
         setNotes = false;
         setRhythm = true;
+		tempoCounter = 0;
     }
     else if (buttonThatWasClicked == &singleNoteButton) {
         chordValue = 0;
