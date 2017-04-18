@@ -70,9 +70,9 @@ private:
     
     TextButton recordButton;
     TextButton stopRecordButton;
-    TextButton toggleInstrumentsButton;
-    TextButton toggleNotesAndRhythmButton;
-    TextButton editNote;
+    TextButton playNotesButton;
+    TextButton combineButton;
+                                    TextButton editNote;
     TextButton clearButton;
     ToggleButton notesButton;
     ToggleButton rhythmButton;
