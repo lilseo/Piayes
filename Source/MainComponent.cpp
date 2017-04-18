@@ -80,14 +80,14 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (stopRecordButton);
     setButton(&stopRecordButton, "Stop Recording");
     
-    addAndMakeVisible (playNotesButton);
-    setButton(&playNotesButton, "Playback Notes");
+    addAndMakeVisible (toggleInstrumentsButton);
+    setButton(&toggleInstrumentsButton, "Toggle Instruments");
     
-    addAndMakeVisible (combineButton);
-    setButton(&combineButton, "Combine Tracks");
+    addAndMakeVisible (toggleNotesAndRhythmButton);
+    setButton(&toggleNotesAndRhythmButton, "Toggle Notes/  Rhythm");
         
         addAndMakeVisible(editNote);
-        setButton(&editNote, "Edit Note");
+        setButton(&editNote, "Edit Notes");
     
     addAndMakeVisible (clearButton);
     setButton(&clearButton, "Clear Recording");
@@ -270,8 +270,8 @@ void MainContentComponent::resized() {
     editNote.setBounds(260, 60, 80, 80);
     clearButton.setBounds (370, 60, 80, 80);
     
-    playNotesButton.setBounds (40, 160, 80, 80);
-    combineButton.setBounds (150, 160, 80, 80);
+    toggleInstrumentsButton.setBounds (40, 160, 80, 80);
+    toggleNotesAndRhythmButton.setBounds (150, 160, 80, 80);
     saveButton.setBounds (260, 160, 80, 80);
     loadButton.setBounds (370, 160, 80, 80);
     
@@ -290,13 +290,13 @@ void MainContentComponent::resized() {
     bassButton.setBounds (825, 120, 150, 24);
     pianoButton.setBounds (825, 150, 150, 24);
     
-    chordsLabel.setBounds(800, 200, 200, 30);
-    singleNoteButton.setBounds(780, 240, 150, 24);
-    chordMajorButton.setBounds (780, 270, 150, 24);
-    chordMinorButton.setBounds(780, 305, 150, 24);
-	chordSeventhMajorButton.setBounds(925, 240, 200, 24);
-	chordSeventhDominantButton.setBounds(925, 270, 200, 24);
-	chordSeventhMinorButton.setBounds(925, 305, 200, 24);
+    chordsLabel.setBounds(650, 200, 200, 30);
+    singleNoteButton.setBounds(550, 240, 150, 24);
+    chordMajorButton.setBounds (550, 270, 150, 24);
+    chordMinorButton.setBounds(550, 305, 150, 24);
+	chordSeventhMajorButton.setBounds(695, 240, 200, 24);
+	chordSeventhDominantButton.setBounds(695, 270, 200, 24);
+	chordSeventhMinorButton.setBounds(695, 305, 200, 24);
     
     volumeSliderLabel.setBounds(1000, 20, 200, 30);
     volumeSlider.setBounds(1080, 60, 20, 150);
@@ -312,8 +312,8 @@ void MainContentComponent::resized() {
     
     recordButton.setBounds (620, 115, 150, 24);
     stopRecordButton.setBounds (620, 145, 150, 24);
-    playNotesButton.setBounds (620, 175, 150, 24);
-    combineButton.setBounds (620, 205, 150, 24);
+    toggleInstrumentsButton.setBounds (620, 175, 150, 24);
+    toggleNotesAndRhythmButton.setBounds (620, 205, 150, 24);
     editNote.setBounds(620, 235, 150, 24);
     clearButton.setBounds (620, 265, 150, 24);
     
@@ -484,16 +484,21 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             buttonClicked(&editNote);
         }
         else if(message.getControllerNumber() == 51){
-            std::cout << "Clear recording" << std::endl;
             buttonClicked(&clearButton);
         }
         else if(message.getControllerNumber() == 44){
-            std::cout << "Playback notes" << std::endl;
-            buttonClicked(&combineButton);
+//            std::cout << "Playback notes" << std::endl;
+//            buttonClicked(&toggleNotesAndRhythmButton);
+            if(record and setNotes){
+                notes.pop_back();
+            }
+            buttonClicked(&toggleInstrumentsButton);
         }
         else if(message.getControllerNumber() == 45){
-            std::cout << "Combine tracks" << std::endl;
-            buttonClicked(&combineButton);
+            if(record and setNotes){
+                notes.pop_back();
+            }
+            buttonClicked(&toggleNotesAndRhythmButton);
         }
         else if(message.getControllerNumber() == 46){
             std::cout << "Save" << std::endl;
@@ -504,52 +509,12 @@ void MainContentComponent::handleIncomingMidiMessage (MidiInput* source, const M
             buttonClicked(&loadButton);
         }
     }
-    else if(message.getControllerNumber() == 2){
-		if (record and setNotes) {
-			notes.pop_back();
-		}
-        std::cout << "Set instrument: " << message.getControllerValue() << std::endl;
-        if(message.getControllerValue() < 32){
-            std::cout << "Sine" << std::endl;
-            sineButton.triggerClick();
-            buttonClicked(&sineButton);
+    else if(message.getControllerNumber() == 5){
+        if (record and setNotes) {
+            notes.pop_back();
         }
-        else if(message.getControllerValue() < 64){
-            std::cout << "Drums" << std::endl;
-            drumButton.triggerClick();
-            buttonClicked(&drumButton);
-        }
-        else if(message.getControllerValue() < 96){
-            std::cout << "Bass" << std::endl;
-            bassButton.triggerClick();
-            buttonClicked(&bassButton);
-        }
-        else{
-            std::cout << "Piano" << std::endl;
-            pianoButton.triggerClick();
-            buttonClicked(&pianoButton);
-        }
-    }
-    else if(message.getControllerNumber() == 3){
-		if (record and setNotes) {
-			notes.pop_back();
-		}
         std::cout << "Volume" << std::endl;
         volumeSlider.setValue(message.getControllerValue());
-    }
-    else if(message.getControllerNumber() == 5){
-		if (record and setNotes) {
-			notes.pop_back();
-		}
-        std::cout << "Set notes/rhythm" << std::endl;
-        if(message.getControllerValue() < 64){
-            notesButton.triggerClick();
-            buttonClicked(&notesButton);
-        }
-        else{
-            rhythmButton.triggerClick();
-            buttonClicked(&rhythmButton);
-        }
     }
     else if(message.getControllerNumber() == 6){
 		if (record and setNotes) {
@@ -951,8 +916,26 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
     else if (buttonThatWasClicked == &stopRecordButton and record == true) {
         record = false;
     }
-    else if (buttonThatWasClicked == &playNotesButton) {
-        playNotes(temp);
+    else if (buttonThatWasClicked == &toggleInstrumentsButton) {
+        if(record and setNotes){
+            notes.pop_back();
+        }
+        if(sineButton.getToggleState()){
+            drumButton.triggerClick();
+            buttonClicked(&drumButton);
+        }
+        else if(drumButton.getToggleState()){
+            bassButton.triggerClick();
+            buttonClicked(&bassButton);
+        }
+        else if(bassButton.getToggleState()){
+            pianoButton.triggerClick();
+            buttonClicked(&pianoButton);
+        }
+        else{
+            sineButton.triggerClick();
+            buttonClicked(&sineButton);
+        }
     }
     else if (buttonThatWasClicked == &notesButton) {
         std::cout << "Clicked notes button." << std::endl;
@@ -1014,16 +997,15 @@ void MainContentComponent::buttonClicked (Button* buttonThatWasClicked) {
         chordValue = 5;
     }
     // Combine pitch and rhythm data
-    else if (buttonThatWasClicked == &combineButton){
-		combineData(bufferNotes, MidiRhythm);
-        if (!bufferOut.empty()) {
-            String logstring = "";
-            for (NoteData n : bufferOut) {
-                logstring += n.note + " " + String(n.timeStart) + " " + String(n.timeEnd) + "\n";
-            }
-            logFeedback(logstring); 
+    else if (buttonThatWasClicked == &toggleNotesAndRhythmButton){
+        if(notesButton.getToggleState()){
+            rhythmButton.triggerClick();
+            buttonClicked(&rhythmButton);
         }
-		is_combine_button = true;
+        else{
+            notesButton.triggerClick();
+            buttonClicked(&notesButton);
+        }
     }
     else if (buttonThatWasClicked == &editNote){
         edit = true;
