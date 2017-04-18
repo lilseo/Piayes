@@ -290,13 +290,13 @@ void MainContentComponent::resized() {
     bassButton.setBounds (825, 120, 150, 24);
     pianoButton.setBounds (825, 150, 150, 24);
     
-    chordsLabel.setBounds(800, 200, 200, 30);
-    singleNoteButton.setBounds(780, 240, 150, 24);
-    chordMajorButton.setBounds (780, 270, 150, 24);
-    chordMinorButton.setBounds(780, 305, 150, 24);
-	chordSeventhMajorButton.setBounds(925, 240, 200, 24);
-	chordSeventhDominantButton.setBounds(925, 270, 200, 24);
-	chordSeventhMinorButton.setBounds(925, 305, 200, 24);
+    chordsLabel.setBounds(650, 200, 200, 30);
+    singleNoteButton.setBounds(560, 240, 150, 24);
+    chordMajorButton.setBounds (560, 270, 150, 24);
+    chordMinorButton.setBounds(560, 305, 150, 24);
+	chordSeventhMajorButton.setBounds(705, 240, 200, 24);
+	chordSeventhDominantButton.setBounds(705, 270, 200, 24);
+	chordSeventhMinorButton.setBounds(705, 305, 200, 24);
     
     volumeSliderLabel.setBounds(1000, 20, 200, 30);
     volumeSlider.setBounds(1080, 60, 20, 150);
