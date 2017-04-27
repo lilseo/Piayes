@@ -67,7 +67,7 @@ For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, 
 	2. Under the “Juce Modules/juce_audio_basics/midi” folder there are two files:<br> 
 	“juce_MidiKeyboardState.cpp” and “juce_MidiKeyboardState.h”<br> 
 	3. In the Piayes project folder there is a folder called “juceCopies” that contains a modified version above two files. Copy the contents of these files into the ones in the midi folder and uncomment them. <br> 
-	4.In the left-side menu in XCode under “Source”, there are three .wav files: “bass.wav”, “Electro-Tom.wav”, and “piano.wav” <br>
+	4. In the left-side menu in XCode under “Source”, there are three .wav files: “bass.wav”, “Electro-Tom.wav”, and “piano.wav” <br>
 			- For each of the three .wav files: click on the file > Locate the “Target Membership” box in the right-side menu in XCode > Check the box under Target Membership, labeled “Piayes(App)” <br>
 	5. Build (this can take up to several minutes), Compile and Run!<br> 
 8. Play!<br> 
