@@ -46,20 +46,24 @@ While Team Piayes will continuing to focus on the editing features outlined abov
 For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, Daniel Verderese, and Chris Salem) see the original github repo: https://github.com/mwiesman/B.R.A.D.<br>
 
 #### Working with **_B.R.A.D.:Piayes Edition_** On Your Own <br>
-1. Download JUCE<br> 
-2. Download/Clone the Piayes repo<br> 
+1. Download JUCE from https://www.juce.com/get-juce <br> 
+2. Download/Clone the Piayes repo from https://github.com/lilseo/Piayes 
+..* Press the green “Clone or download” button > press “Download ZIP” <br> 
 3. Open the Piayes.Jucer file from the Piayes repo directory in the ProJucer application<br> 
-4. From the config tab:<br> 
+4. From the Config tab:<br> 
 	a. Select “juce_audio_basics” under “Modules”<br> 
-	b. Change the path to Xcode to be the the Modules folder in your copy of JUCE<br> 
-	c. Select “Modules”<br> 
-	d. Click on “juce_audio_basics” and then click “Set path for all modules” followed by “Copy the path from the module ‘juce_audio_basics’ to all other modules<br> 
+	b. Change the “Path for ‘Xcode (MacOSX)’” to be the the Modules folder in your copy of JUCE<br> 
+	c. Click on “Modules” in the left-hand menu <br> 
+	d. Click on “juce_audio_basics” > “Set path for all modules” button > “Copy the path from the module ‘juce_audio_basics’ to all other modules<br> 
 	e. Select “Piayes” (or the name of the project) and make sure “include BinaryData.h in the AppConfig.h file” is UNCHECKED<br> 
 5. From the files tab:<br> 
 	a. Make sure the “Source” folder contains BinaryData.cpp, BinaryData.h, MainComponent.h, MainComponent.cpp, and Main.Cpp. Only the cpp files should have “compile” checked. <br> 
 6. Click “Save Project and Open in IDE…” to open the project in XCode/the IDE selected<br> 
 7. Within XCode:<br> 
-	a. Add the “Synth.cpp” and “Synth.h” into the Source file in the project. These files are located in the source folder in the main project directory that was cloned. <br> 
+	a. Add the “Synth.cpp” and “Synth.h” into the Source file in the project. <br> 
+..* Ctrl-click on the “Source” folder in the left-hand menu in Xcode.
+..* Select “Add files to Piayes”.
+..* The “Synth.cpp” and “Synth.h” files are located in the source folder in the main project directory that was cloned from Github.
 	b. Under the “Juce Modules/juce_audio_basics/midi” folder there are two files:<br> 
 	“juce_MidiKeyboardState.cpp” and “juce_MidiKeyboardState.h”<br> 
 	c. In the Piayes project folder there is a folder called “juceCopies” that contains a modified version above two files. Copy the contents of these files into the ones in the midi folder and uncomment them. <br> 
