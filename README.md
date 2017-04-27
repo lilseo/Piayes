@@ -48,7 +48,7 @@ For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, 
 #### Working with **_B.R.A.D.:Piayes Edition_** On Your Own <br>
 1. Download JUCE from https://www.juce.com/get-juce <br> 
 2. Download/Clone the Piayes repo from https://github.com/lilseo/Piayes 
-..* Press the green “Clone or download” button > press “Download ZIP” <br> 
+	..* Press the green “Clone or download” button > press “Download ZIP” <br> 
 3. Open the Piayes.Jucer file from the Piayes repo directory in the ProJucer application<br> 
 4. From the Config tab:<br> 
 	a. Select “juce_audio_basics” under “Modules”<br> 
@@ -61,14 +61,14 @@ For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, 
 6. Click “Save Project and Open in IDE…” to open the project in XCode/the IDE selected<br> 
 7. Within XCode:<br> 
 	a. Add the “Synth.cpp” and “Synth.h” into the Source file in the project. <br> 
-		* Ctrl-click on the “Source” folder in the left-side menu in Xcode.
-		* Select “Add files to Piayes”.
-		* The “Synth.cpp” and “Synth.h” files are located in the source folder in the main project directory that was cloned from Github.
+		..* Ctrl-click on the “Source” folder in the left-side menu in XCode. 
+		..* Select “Add files to Piayes”.
+		..* The “Synth.cpp” and “Synth.h” files are located in the source folder in the main project directory that was cloned from Github.
 	b. Under the “Juce Modules/juce_audio_basics/midi” folder there are two files:<br> 
 	“juce_MidiKeyboardState.cpp” and “juce_MidiKeyboardState.h”<br> 
 	c. In the Piayes project folder there is a folder called “juceCopies” that contains a modified version above two files. Copy the contents of these files into the ones in the midi folder and uncomment them. <br> 
-	d.In the left-side menu in Xcode under “Source”, there are three .wav files: “bass.wav”, “Electro-Tom.wav”, and “piano.wav” <br>
-		* For each of the three .wav files: click on the file > Locate the “Target Membership” box in the right-side menu in Xcode > Check the box under Target Membership, labeled “Piayes(App)”
+	d.In the left-side menu in XCode under “Source”, there are three .wav files: “bass.wav”, “Electro-Tom.wav”, and “piano.wav” <br>
+		* For each of the three .wav files: click on the file > Locate the “Target Membership” box in the right-side menu in XCode > Check the box under Target Membership, labeled “Piayes(App)”
 	e. Build (this can take up to several minutes), Compile and Run!<br> 
 8. Play!<br> 
 
