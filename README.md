@@ -48,7 +48,7 @@ For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, 
 #### Working with **_B.R.A.D.:Piayes Edition_** On Your Own <br>
 1. Download JUCE from https://www.juce.com/get-juce <br> 
 2. Download/Clone the Piayes repo from https://github.com/lilseo/Piayes <br>
-		- Press the green “Clone or download” button > press “Download ZIP” <br> 
+	1. Press the green “Clone or download” button > press “Download ZIP” <br> 
 3. Open the Piayes.Jucer file from the Piayes repo directory in the ProJucer application<br> 
 4. From the Config tab:<br> 
 	1. Select “juce_audio_basics” under “Modules”<br> 
