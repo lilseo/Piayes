@@ -61,14 +61,14 @@ For more information on Team B.R.A.D (made up of Mathew Wiesman, Anna Billings, 
 6. Click “Save Project and Open in IDE…” to open the project in XCode/the IDE selected<br> 
 7. Within XCode:<br> 
 	1. Add the “Synth.cpp” and “Synth.h” into the Source file in the project. <br> 
-			- Ctrl-click on the “Source” folder in the left-side menu in XCode. <br>
-			- Select “Add files to Piayes”. <br>
-			- The “Synth.cpp” and “Synth.h” files are located in the source folder in the main project directory that was cloned from Github. <br>
+			* Ctrl-click on the “Source” folder in the left-side menu in XCode. <br>
+			* Select “Add files to Piayes”. <br>
+			* The “Synth.cpp” and “Synth.h” files are located in the source folder in the main project directory that was cloned from Github. <br>
 	2. Under the “Juce Modules/juce_audio_basics/midi” folder there are two files:<br> 
 	“juce_MidiKeyboardState.cpp” and “juce_MidiKeyboardState.h”<br> 
 	3. In the Piayes project folder there is a folder called “juceCopies” that contains a modified version above two files. Copy the contents of these files into the ones in the midi folder and uncomment them. <br> 
 	4. In the left-side menu in XCode under “Source”, there are three .wav files: “bass.wav”, “Electro-Tom.wav”, and “piano.wav” <br>
-			- For each of the three .wav files: click on the file > Locate the “Target Membership” box in the right-side menu in XCode > Check the box under Target Membership, labeled “Piayes(App)” <br>
+			* For each of the three .wav files: Click on the file > Locate the “Target Membership” box in the right-side menu in XCode > Check the box under Target Membership, labeled “Piayes(App)” <br>
 	5. Build (this can take up to several minutes), Compile and Run!<br> 
 8. Play!<br> 
 
